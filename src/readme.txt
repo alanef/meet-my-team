@@ -1,9 +1,9 @@
 === Meet My Team ===
 Contributors: Buooy, Fullworks
 Tags: meet,my,team,members,staff,gallery,responsive,modal,grid
-Donate link: https://www.paypal.com/biz/fund?id=ZG4NGLJSYX9SC
-Tested up to: 5.8
-Stable tag: 2.0.3
+Donate link: https://www.paypal.com/donate/?hosted_button_id=UGRBY5CHSD53Q
+Tested up to: 5.9
+Stable tag: 2.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -114,6 +114,9 @@ Feel free to open a thread on the [WordPress support forum for this plugin](http
 4. Responsive Modal that displays each team member's information
 
 == Upgrade Notice ==
+= 2.0.4 =
+* Add donation library
+
 = 2.0.3 =
 * Add shortcode processing on Bio
 * Fix bug stopping enable_modal='false' working

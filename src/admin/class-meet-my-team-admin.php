@@ -1,4 +1,5 @@
 <?php
+
 // Include Files
 include_once "includes/class-meet-my-team-build-cpt.php";
 
@@ -60,6 +61,10 @@ class Meet_My_Team_Admin {
 		// Add an action link pointing to the options page.
 		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_slug . '.php' );
 		//add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
+		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ) );
+
+
+		//	add_filter( 'plugindonation_lib_strings_redirect-404-error-page-to-homepage-or-custom-page', array( $this, 'set_strings' ) );
 
 
 	}
@@ -79,6 +84,38 @@ class Meet_My_Team_Admin {
 		}
 
 		return self::$instance;
+	}
+
+	/**
+	 * Register the administration menu for this plugin into the WordPress Dashboard menu.
+	 *
+	 * @since    1.0.0
+	 */
+	public function add_plugin_admin_menu() {
+
+		/*
+		 * Add a settings page for this plugin to the Settings menu.
+		 *
+		 * NOTE:  Alternative menu locations are available via WordPress administration menu functions.
+		 *
+		 *        Administration Menus: http://codex.wordpress.org/Administration_Menus
+		 *
+		 * @TODO:
+		 *
+		 * - Change 'Page Title' to the title of your plugin admin page
+		 * - Change 'Menu Text' to the text for menu item for the plugin settings page
+		 * - Change 'manage_options' to the capability you see fit
+		 *   For reference: http://codex.wordpress.org/Roles_and_Capabilities
+		 */
+		$this->plugin_screen_hook_suffix = add_submenu_page(
+			'edit.php?post_type=team_members',
+			esc_html__( 'Support this Plugin', $this->plugin_slug ),
+			esc_html__( 'Help this plugin', $this->plugin_slug ),
+			'manage_options',
+			$this->plugin_slug . '-settings',
+			array( $this, 'display_plugin_admin_page' )
+		);
+
 	}
 
 	/**
@@ -122,44 +159,16 @@ class Meet_My_Team_Admin {
 	}
 
 	/**
-	 * Register the administration menu for this plugin into the WordPress Dashboard menu.
-	 *
-	 * @since    1.0.0
-	 */
-	public function add_plugin_admin_menu() {
-
-		/*
-		 * Add a settings page for this plugin to the Settings menu.
-		 *
-		 * NOTE:  Alternative menu locations are available via WordPress administration menu functions.
-		 *
-		 *        Administration Menus: http://codex.wordpress.org/Administration_Menus
-		 *
-		 * @TODO:
-		 *
-		 * - Change 'Page Title' to the title of your plugin admin page
-		 * - Change 'Menu Text' to the text for menu item for the plugin settings page
-		 * - Change 'manage_options' to the capability you see fit
-		 *   For reference: http://codex.wordpress.org/Roles_and_Capabilities
-		 */
-		$this->plugin_screen_hook_suffix = add_submenu_page(
-			'edit.php?post_type=team_members',
-			__( 'Meet My Team Settings', $this->plugin_slug ),
-			__( 'Settings', $this->plugin_slug ),
-			'manage_options',
-			$this->plugin_slug,
-			array( $this, 'display_plugin_admin_page' )
-		);
-
-	}
-
-	/**
 	 * Render the settings page for this plugin.
 	 *
 	 * @since    1.0.0
 	 */
 	public function display_plugin_admin_page() {
-		include_once( 'views/admin.php' );
+		global $donation_obj;
+		include_once 'views/admin.php';
+		echo '<table class="form-table"><tbody>';
+		$donation_obj->display();
+		echo '</tbody></table>';
 	}
 
 }

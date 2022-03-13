@@ -14,18 +14,15 @@
     "vendor-dir": "vendor"
   },
   "repositories": {
-    "template-loader": {
+    "plugindonations_lib": {
       "type": "vcs",
-      "url": "https://github.com/garyjones/gamajo-template-loader"
-    },
-    "wordpress-sdk": {
-      "type": "vcs",
-      "url": "https://github.com/Freemius/wordpress-sdk"
+      "url": "https://github.com/alanef/plugindonation_lib"
     }
   },
   "require": {
     "php": ">=7.1.0",
     "composer/installers": "v1.0.12",
+    "alanef/plugindonation_lib": "dev-master",
     "wp-coding-standards/wpcs": ">=2.2.0"
   }
 }

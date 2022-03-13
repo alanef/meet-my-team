@@ -14,7 +14,7 @@
  * Plugin Name:       Meet My Team
  * Plugin URI:        http://wordpress.org/support/plugin/meet-my-team
  * Description:       Ever needed to display a lot of team members but you find it too lengthy to put into a single page? Meet My Team solves that problem by providing an intuitive interface that allows you to add your team members and display their information in a modal! Sounds great?
- * Version:           2.0.3
+ * Version:           2.0.4
  * Author:            Fullworks
  * Author URI:        https://fullworks.net
  * Text Domain:       meet-my-team
@@ -28,6 +28,8 @@
  */
 
 // If this file is called directly, abort.
+use AlanEFPluginDonation\PluginDonation;
+
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
@@ -42,7 +44,7 @@ if ( ! defined( 'WPINC' ) ) {
  * - replace `class-meet-my-team.php` with the name of the plugin's class file
  *
  */
-require_once( plugin_dir_path( __FILE__ ) . 'public/class-meet-my-team.php' );
+require_once plugin_dir_path( __FILE__ ) . 'public/class-meet-my-team.php';
 
 /*
  * Register hooks that are fired when the plugin is activated or deactivated.
@@ -86,7 +88,17 @@ add_action( 'plugins_loaded', array( 'Meet_My_Team', 'get_instance' ) );
  */
 if ( is_admin() ) {
 
-	require_once( plugin_dir_path( __FILE__ ) . 'admin/class-meet-my-team-admin.php' );
+// Include the autoloader so we can dynamically include the classes. Only needed in admin
+	require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+	require_once plugin_dir_path( __FILE__ ) . 'admin/class-meet-my-team-admin.php';
+	global $donation_obj;
+	$donation_obj = new PluginDonation(
+		'meet-my-team',
+		'team_members_page_meet-my-team-settings',
+		'meet-my-team/meet-my-team.php',
+		admin_url( 'edit.php?post_type=team_members&page=meet-my-team-settings' ),
+		'Meet My Team'
+	);
 	add_action( 'plugins_loaded', array( 'Meet_My_Team_Admin', 'get_instance' ) );
 
 }
