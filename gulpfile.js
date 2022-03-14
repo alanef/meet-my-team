@@ -27,7 +27,20 @@ gulp.task('zip', (done) => {
 
 gulp.task('clean', () => {
     return del([
-        'dist/vendor/'
+        'dist/**/sass/',
+        'dist/**/*.css.map',
+        'dist/composer.*',
+        'dist/vendor/bin/',
+        'dist/vendor/squizlabs/',
+        'dist/vendor/wp-coding-standards/',
+        'dist/vendor/**/.git*',
+        'dist/vendor/**/.git*',
+        'dist/vendor/**/.travis.yml',
+        'dist/vendor/**/.codeclimate.yml',
+        'dist/vendor/**/composer.json',
+        'dist/vendor/**/package.json',
+        'dist/vendor/**/gulpfile.js',
+        'dist/vendor/**/*.md'
     ]);
 });
 
