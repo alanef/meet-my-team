@@ -1,8 +1,8 @@
 === Meet My Team ===
 Contributors: Buooy, Fullworks
 Tags: meet,my,team,members,staff,gallery,responsive,modal,grid
-Donate link: https://www.paypal.com/donate/?hosted_button_id=UGRBY5CHSD53Q
-Tested up to: 6.0
+Donate link: https://ko-fi.com/wpalan
+Tested up to: 6.1
 Stable tag: 2.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -114,45 +114,18 @@ Feel free to open a thread on the [WordPress support forum for this plugin](http
 4. Responsive Modal that displays each team member's information
 
 == Upgrade Notice ==
-= 2.0.5 =
-* Fix class autoloader
-
-= 2.0.4 =
-* Add donation library
-
-= 2.0.3 =
-* Add shortcode processing on Bio
-* Fix bug stopping enable_modal='false' working
-
-= 2.0.2 =
-* force / cache bust javascript change
-
-= 2.0.0 =
-* Authorship, support and maintenance has transferred from Buooy to Fullworks
-
 
 == Changelog ==
+= 2.0.5 =
+* fix autoloader
+
+= 2.0.4 =
+* add donate library
+
 = 2.0.0 =
 * Fixed PHP warning in PHP 7 and tested to PHP 7.4
 * Fixed jQuery migration issues to support WP 5.6
 
+[Full Change History](https://plugins.trac.wordpress.org/browser/meet-my-team/trunk/changelog.txt)
 
-= 1.1.3 =
-* Fixed Bug that prevented content from appearing before shortcode (thanks to trevor and Wh1sp3r)
-* Added debugging console logs
 
-= 1.1.2 =
-* Fixed Bug that did not update the version
-
-= 1.1.1 =
-* Fixed Bug that doesn't include js and css
-
-= 1.1 =
-* New Features: More shortcodes are now available!
-* New Features: Added categories to the members that can be used for groups
-* Bug Fixes: Post order added back to rearrange team member hierarchy
-
-= 1.0 =
-* Introduction to Meet My Team
-
-== Upgrade Notice ==
