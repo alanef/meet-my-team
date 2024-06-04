@@ -4,3 +4,4 @@ zipped/
 node_modules/
 meet-my-team/includes/vendor/
 /meet-my-team/vendor/
+.wp-env.override.json
