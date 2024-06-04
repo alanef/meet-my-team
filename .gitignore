@@ -2,5 +2,5 @@
 dist/
 zipped/
 node_modules/
-src/includes/vendor/
-/src/vendor/
+meet-my-team/includes/vendor/
+/meet-my-team/vendor/

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 meet-my-team
+# Copyright (C) 2024 meet-my-team
 # This file is distributed under the same license as the meet-my-team package.
 msgid ""
 msgstr ""

@@ -11,7 +11,10 @@
   ],
   "minimum-stability": "stable",
   "config": {
-    "vendor-dir": "vendor"
+    "vendor-dir": "vendor",
+    "allow-plugins": {
+      "composer/installers": true
+    }
   },
   "repositories": {
     "plugindonations_lib": {
@@ -22,7 +25,6 @@
   "require": {
     "php": ">=7.1.0",
     "composer/installers": "v1.0.12",
-    "alanef/plugindonation_lib": "dev-master",
-    "wp-coding-standards/wpcs": ">=2.2.0"
+    "alanef/plugindonation_lib": "dev-master"
   }
 }
