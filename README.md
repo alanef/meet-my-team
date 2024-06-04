@@ -24,13 +24,13 @@ IDE of your choice
 * Configure your IDE to adopt WP coding layouts  ( reference your IDE  e.g. [PHPstorm](https://www.jetbrains.com/help/phpstorm/wordpress-aware-coding-assistance.html) )
 
 
-1. Develop in `/meet-my-team`
+2. Develop in `/meet-my-team`
 
 If you use `wp-env`  ( recommended ) then mapping happens automatically otherwise
 your development installation  should map  `/meet-my-team` to `your-local-install/wp-contents/plugins/meet-my-team`
 in PHPstorm you can use auto deployment mapping  or otherwise use a symbolic link or some other method such as a local VScode deployment method
 
-1. Local Development
+3. Local Development
 
 The project is set up so you can use  `wp-env` as a local dev environment if you wish, see quick start https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/
 
