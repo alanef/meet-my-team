@@ -1,6 +1,6 @@
 {
   "core": "WordPress/WordPress#master",
-  "plugins": ["./widget-for-eventbrite-api"],
+  "plugins": ["./meet-my-team"],
   "port": 8710,
   "testsPort": 8711,
   "config": {
