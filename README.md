@@ -37,7 +37,7 @@ The project is set up so you can use  `wp-env` as a local dev environment if you
 If you need local configuration of wp-env you can use `.wp-env.override.json`, which is ignored by git.
 
 Running `wp-env start --xdebug` in the project route will start a local dev environment with xdebug enabled on
-`localhost:8100` with `/src` mapped into plugins
+`localhost:8710` with `/meet-my-team` mapped into plugins
 
 
 ## Validation ##
