@@ -60,7 +60,7 @@ merge the version branch with `master`  and push to github
 
 ### Release ###
 
-Move the zip to the local wordpress.org directory and run the scrip update_wp_free_plugin
+Move the zip to the local wordpress.org directory and run the script update_wp_free_plugin
 
 
 ### Update this README.md ###
