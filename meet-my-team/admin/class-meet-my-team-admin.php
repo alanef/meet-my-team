@@ -31,6 +31,7 @@ class Meet_My_Team_Admin {
 	 * @var      string
 	 */
 	protected $plugin_screen_hook_suffix = null;
+	private $plugin_slug;
 
 	/**
 	 * Initialize the plugin by loading admin scripts & styles and adding a
