@@ -3,7 +3,7 @@ Contributors: Buooy, Fullworks
 Tags: meet my team,team,staff gallery,team members
 Donate link: https://ko-fi.com/wpalan
 Tested up to: 6.5
-Stable tag: 2.1
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -116,6 +116,9 @@ Feel free to open a thread on the [WordPress support forum for this plugin](http
 == Upgrade Notice ==
 
 == Changelog ==
+= 2.1.1 =
+* Update free plugin library
+
 = 2.1 =
 * Add free plugin library
 
