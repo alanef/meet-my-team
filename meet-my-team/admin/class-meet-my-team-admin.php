@@ -65,9 +65,6 @@ class Meet_My_Team_Admin {
 		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ) );
 
 
-		//	add_filter( 'plugindonation_lib_strings_redirect-404-error-page-to-homepage-or-custom-page', array( $this, 'set_strings' ) );
-
-
 	}
 
 	/**
@@ -165,10 +162,9 @@ class Meet_My_Team_Admin {
 	 * @since    1.0.0
 	 */
 	public function display_plugin_admin_page() {
-		global $donation_obj;
 		include_once 'views/admin.php';
 		echo '<table class="form-table"><tbody>';
-		$donation_obj->display();
+		do_action( 'ffpl_ad_display' );
 		echo '</tbody></table>';
 	}
 

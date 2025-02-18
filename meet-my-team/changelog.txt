@@ -1,4 +1,7 @@
 == Changelog ==
+= 2.1 =
+* Add free plugin library
+
 = 2.0.5 =
 * fix autoloader
 

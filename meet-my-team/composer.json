@@ -16,15 +16,9 @@
       "composer/installers": true
     }
   },
-  "repositories": {
-    "plugindonations_lib": {
-      "type": "vcs",
-      "url": "https://github.com/alanef/plugindonation_lib"
-    }
-  },
   "require": {
-    "php": ">=7.1.0",
+    "php": ">=7.4.0",
     "composer/installers": "v1.0.12",
-    "alanef/plugindonation_lib": "dev-master"
+    "alanef/free_plugin_lib": "^v1.0.0"
   }
 }
