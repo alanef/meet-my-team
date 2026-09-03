@@ -1,7 +1,7 @@
 {
-  "name": "fullworks/meet-my-team",
-  "description": "Wordpress plugin",
-  "type": "wordpress-plugin",
+  "name": "fullworks/meet-my-team-project",
+  "description": "Development project for the Meet My Team WordPress plugin",
+  "type": "project",
   "license": "GPL-2.0-or-later",
   "authors": [
     {
@@ -9,37 +9,50 @@
       "email": "alan@fullworksplugins.com"
     }
   ],
-  "minimum-stability": "stable",
-  "require-dev": {
-    "php": ">=7.4.0",
-    "squizlabs/php_codesniffer": "3.*",
-    "wp-coding-standards/wpcs": "^3.0",
-    "phpcompatibility/phpcompatibility-wp": "*",
-    "phpstan/phpstan": "*"
-  },
   "config": {
+    "platform": {
+      "php": "7.4.33"
+    },
     "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true,
-      "symfony/flex": true
+      "dealerdirect/phpcodesniffer-composer-installer": true
     }
   },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "3.*",
+    "wp-coding-standards/wpcs": ">=2.3.0",
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "phpunit/phpunit": "^9.5",
+    "yoast/phpunit-polyfills": "^1.1",
+    "phpstan/phpstan": "*"
+  },
   "scripts": {
-    "post-update-cmd": "composer update -d meet-my-team",
-    "phpcs": "phpcs meet-my-team -s --standard=phpcs_sec.xml --ignore=*/vendor/*  --extensions=php",
-    "compat:8.3": "./vendor/bin/phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/*  --extensions=php --runtime-set testVersion 8.3",
-    "compat:8.2": "./vendor/bin/phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/*  --extensions=php --runtime-set testVersion 8.2",
-    "compat:8.1": "./vendor/bin/phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/*  --extensions=php --runtime-set testVersion 8.1",
-    "compat:8.0": "./vendor/bin/phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/*  --extensions=php --runtime-set testVersion 8.0",
-    "compat:7.4": "./vendor/bin/phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/*  --extensions=php --runtime-set testVersion 7.4",
-    "compat:5.6": "./vendor/bin/phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/*  --extensions=php --runtime-set testVersion 5.6",
+    "post-update-cmd": [
+      "@plugin-update",
+      "@make-pot"
+    ],
+    "plugin-update": "if [ -f meet-my-team/composer.json ]; then composer update -d meet-my-team; fi",
+    "make-pot": "mkdir -p meet-my-team/languages && wp i18n make-pot ./meet-my-team ./meet-my-team/languages/meet-my-team.pot --skip-audit --exclude='vendor,includes/vendor,node_modules'",
+    "build": [
+      "if [ -f meet-my-team/composer.json ]; then composer install -d meet-my-team --no-dev; fi",
+      "mkdir -p zipped",
+      "wp dist-archive meet-my-team zipped/meet-my-team-free.zip --force"
+    ],
+    "phpcs": "phpcs meet-my-team -s --standard=phpcs_sec.xml --ignore=*/vendor/* --extensions=php",
+    "compat:8.4": "phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/* --extensions=php --runtime-set testVersion 8.4",
+    "compat:8.3": "phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/* --extensions=php --runtime-set testVersion 8.3",
+    "compat:8.2": "phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/* --extensions=php --runtime-set testVersion 8.2",
+    "compat:8.1": "phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/* --extensions=php --runtime-set testVersion 8.1",
+    "compat:8.0": "phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/* --extensions=php --runtime-set testVersion 8.0",
+    "compat:7.4": "phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/* --extensions=php --runtime-set testVersion 7.4",
     "check": [
+      "@compat:8.4",
       "@compat:8.3",
       "@compat:8.2",
       "@compat:8.1",
       "@compat:8.0",
       "@compat:7.4",
-      "@compat:5.6",
       "@phpcs"
-    ]
+    ],
+    "test": "npm test"
   }
 }

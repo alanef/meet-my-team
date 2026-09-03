@@ -1,8 +1,22 @@
 .idea/
+.vscode/
+.directory
+.DS_Store
 dist/
+build/
 zipped/
+tmp-build/
 node_modules/
-meet-my-team/includes/vendor/
-/meet-my-team/vendor/
-.wp-env.override.json
 /vendor/
+/meet-my-team/vendor/
+/meet-my-team/includes/vendor/
+.phpunit.result.cache
+*.phpunit.result.cache
+.wp-env.override.json
+.env
+.env.*
+!.env.example
+*.log
+__pycache__/
+# repository specific
+meet-my-team/includes/vendor/
