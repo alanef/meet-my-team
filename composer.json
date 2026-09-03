@@ -35,7 +35,8 @@
     "build": [
       "if [ -f meet-my-team/composer.json ]; then composer install -d meet-my-team --no-dev; fi",
       "mkdir -p zipped",
-      "wp dist-archive meet-my-team zipped/meet-my-team-free.zip --force"
+      "wp dist-archive meet-my-team zipped/meet-my-team-free.zip --force",
+      "zip -qd zipped/meet-my-team-free.zip meet-my-team/.distignore >/dev/null 2>&1 || true"
     ],
     "phpcs": "phpcs meet-my-team -s --standard=phpcs_sec.xml --ignore=*/vendor/* --extensions=php",
     "compat:8.4": "phpcs meet-my-team -s --standard=PHPCompatibilityWP --ignore=*/vendor/* --extensions=php --runtime-set testVersion 8.4",
