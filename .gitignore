@@ -9,6 +9,7 @@ tmp-build/
 node_modules/
 /vendor/
 /meet-my-team/vendor/
+/meet-my-team/composer.lock
 /meet-my-team/includes/vendor/
 .phpunit.result.cache
 *.phpunit.result.cache
