@@ -106,6 +106,10 @@ We are actually using a modified version of bootstrap. It was designed to shrink
 Feel free to open a thread on the [WordPress support forum for this plugin](https://wordpress.org/support/plugin/meet-my-team/?view=all)
 
 
+= How can I report security bugs? =
+
+You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/9e5fb8f7-4284-43b3-a758-00fcf74623a0)
+
 == Screenshots ==
 
 1. Add a variety of information to each team member
