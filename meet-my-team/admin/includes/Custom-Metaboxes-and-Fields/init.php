@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 /*
 Script Name: 	Custom Metaboxes and Fields
 Contributors: 	Andrew Norcross (@norcross / andrewnorcross.com)
@@ -258,10 +261,10 @@ class cmb_Meta_Box {
 				), self::CMB_VERSION );
 				wp_register_script( 'wp-color-picker', admin_url( 'js/color-picker.min.js' ), array( 'iris' ), self::CMB_VERSION );
 				wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
-					'clear'         => __( 'Clear' ),
-					'defaultString' => __( 'Default' ),
-					'pick'          => __( 'Select Color' ),
-					'current'       => __( 'Current Color' ),
+					'clear'         => __( 'Clear', 'meet-my-team' ),
+					'defaultString' => __( 'Default', 'meet-my-team' ),
+					'pick'          => __( 'Select Color', 'meet-my-team' ),
+					'current'       => __( 'Current Color', 'meet-my-team' ),
 				) );
 			}
 		} else {
@@ -936,7 +939,7 @@ class cmb_Meta_Box {
 		}
 
 		// And search for a fuzzy match of the file name
-		$attachment = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE guid LIKE '%%%s%%' LIMIT 1;", $img_url ) );
+		$attachment = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE guid LIKE %s LIMIT 1;", '%' . $wpdb->esc_like( $img_url ) . '%' ) );
 
 		// If we found an attachement ID, return it
 		if ( ! empty( $attachment ) && is_array( $attachment ) ) {
@@ -1350,7 +1353,7 @@ function cmb_metabox_form( $meta_box, $object_id, $echo = true ) {
 
 	$form_format = apply_filters( 'cmb_frontend_form_format', '<form class="cmb-form" method="post" id="%s" enctype="multipart/form-data" encoding="multipart/form-data"><input type="hidden" name="object_id" value="%s">%s<input type="submit" name="submit-cmb" value="%s" class="button-primary"></form>', $object_id, $meta_box, $form );
 
-	$form = sprintf( $form_format, esc_attr( $meta_box['id'] ), esc_attr( $object_id ), $form, esc_attr__( 'Save', 'cmb' ) );
+	$form = sprintf( $form_format, esc_attr( $meta_box['id'] ), esc_attr( $object_id ), $form, esc_attr__( 'Save', 'meet-my-team' ) );
 
 	if ( $echo ) {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the fields come from cmb_print_metabox(), which escapes each one; the format's values are escaped above

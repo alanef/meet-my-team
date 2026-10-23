@@ -147,7 +147,7 @@ class cmb_Meta_Box_types {
 	 * @since 1.0.0
 	 */
 	private static function repeat_table_close() {
-		echo '</tbody></table><p class="add-row"><a data-selector="', esc_attr( cmb_Meta_Box::$field['id'] ), '_repeat" class="add-row-button button" href="#">', esc_html__( 'Add Row', 'cmb' ), '</a></p>';
+		echo '</tbody></table><p class="add-row"><a data-selector="', esc_attr( cmb_Meta_Box::$field['id'] ), '_repeat" class="add-row-button button" href="#">', esc_html__( 'Add Row', 'meet-my-team' ), '</a></p>';
 	}
 
 	/**
@@ -182,7 +182,7 @@ class cmb_Meta_Box_types {
 	private static function repeat_cell( $class, $val = '' ) {
 		echo '<td>';
 		self::text_input( $class, $val );
-		echo '</td><td class="remove-row"><a class="button remove-row-button" href="#">', esc_html__( 'Remove', 'cmb' ), '</a></td>';
+		echo '</td><td class="remove-row"><a class="button remove-row-button" href="#">', esc_html__( 'Remove', 'meet-my-team' ), '</a></td>';
 	}
 
 	/**
@@ -192,7 +192,7 @@ class cmb_Meta_Box_types {
 	 * @return string|false       File extension or false
 	 */
 	public static function get_file_ext( $file ) {
-		$parsed = @parse_url( $file, PHP_URL_PATH );
+		$parsed = wp_parse_url( $file, PHP_URL_PATH );
 		return $parsed ? strtolower( pathinfo( $parsed, PATHINFO_EXTENSION ) ) : false;
 	}
 
@@ -292,7 +292,7 @@ class cmb_Meta_Box_types {
 	}
 
 	public static function text_date_timestamp( $field, $meta ) {
-		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( ! empty( $meta ) ? date( 'm\/d\/Y', $meta ) : $field['default'] ), '" />', wp_kses_post( self::desc() );
+		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( ! empty( $meta ) ? gmdate( 'm\/d\/Y', $meta ) : $field['default'] ), '" />', wp_kses_post( self::desc() );
 	}
 
 	public static function text_datetime_timestamp( $field, $meta, $object_id ) {
@@ -303,8 +303,8 @@ class cmb_Meta_Box_types {
 			$meta -= $tz_offset;
 		}
 
-		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', esc_attr( $field['id'] ), '[date]" id="', esc_attr( $field['id'] ), '_date" value="', esc_attr( ! empty( $meta ) ? date( 'm\/d\/Y', $meta ) : $field['default'] ), '" />';
-		echo '<input class="cmb_timepicker text_time" type="text" name="', esc_attr( $field['id'] ), '[time]" id="', esc_attr( $field['id'] ), '_time" value="', esc_attr( ! empty( $meta ) ? date( 'h:i A', $meta ) : $field['default'] ), '" />', wp_kses_post( self::desc() );
+		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', esc_attr( $field['id'] ), '[date]" id="', esc_attr( $field['id'] ), '_date" value="', esc_attr( ! empty( $meta ) ? gmdate( 'm\/d\/Y', $meta ) : $field['default'] ), '" />';
+		echo '<input class="cmb_timepicker text_time" type="text" name="', esc_attr( $field['id'] ), '[time]" id="', esc_attr( $field['id'] ), '_time" value="', esc_attr( ! empty( $meta ) ? gmdate( 'h:i A', $meta ) : $field['default'] ), '" />', wp_kses_post( self::desc() );
 	}
 
 	public static function text_datetime_timestamp_timezone( $field, $meta ) {
@@ -319,8 +319,8 @@ class cmb_Meta_Box_types {
 			$meta = $datetime->getTimestamp() + $tz->getOffset( new DateTime('NOW') );
 		}
 
-		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', esc_attr( $field['id'] ), '[date]" id="', esc_attr( $field['id'] ), '_date" value="', esc_attr( ! empty( $meta ) ? date( 'm\/d\/Y', $meta ) : $field['default'] ), '" />';
-		echo '<input class="cmb_timepicker text_time" type="text" name="', esc_attr( $field['id'] ), '[time]" id="', esc_attr( $field['id'] ), '_time" value="', esc_attr( ! empty( $meta ) ? date( 'h:i A', $meta ) : $field['default'] ), '" />';
+		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', esc_attr( $field['id'] ), '[date]" id="', esc_attr( $field['id'] ), '_date" value="', esc_attr( ! empty( $meta ) ? gmdate( 'm\/d\/Y', $meta ) : $field['default'] ), '" />';
+		echo '<input class="cmb_timepicker text_time" type="text" name="', esc_attr( $field['id'] ), '[time]" id="', esc_attr( $field['id'] ), '_time" value="', esc_attr( ! empty( $meta ) ? gmdate( 'h:i A', $meta ) : $field['default'] ), '" />';
 
 		echo '<select name="', esc_attr( $field['id'] ), '[timezone]" id="', esc_attr( $field['id'] ), '_timezone">';
 		echo wp_kses( wp_timezone_choice( $tzstring ), self::timezone_choice_tags() );
@@ -439,7 +439,7 @@ class cmb_Meta_Box_types {
 
 		echo '<select name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '">';
 		$names = wp_get_object_terms( $object_id, $field['taxonomy'] );
-		$terms = get_terms( $field['taxonomy'], 'hide_empty=0' );
+		$terms = get_terms( array( 'taxonomy' => $field['taxonomy'], 'hide_empty' => false ) );
 		foreach ( $terms as $term ) {
 			if ( !is_wp_error( $names ) && !empty( $names ) && ! strcmp( $term->slug, $names[0]->slug ) ) {
 				echo '<option value="', esc_attr( $term->slug ), '" selected>', esc_html( $term->name ), '</option>';
@@ -453,7 +453,7 @@ class cmb_Meta_Box_types {
 	public static function taxonomy_radio( $field, $meta, $object_id ) {
 
 		$names = wp_get_object_terms( $object_id, $field['taxonomy'] );
-		$terms = get_terms( $field['taxonomy'], 'hide_empty=0' );
+		$terms = get_terms( array( 'taxonomy' => $field['taxonomy'], 'hide_empty' => false ) );
 		echo '<ul>';
 		$i = 1;
 		foreach ( $terms as $term ) {
@@ -472,7 +472,7 @@ class cmb_Meta_Box_types {
 	public static function taxonomy_multicheck( $field, $meta, $object_id ) {
 		echo '<ul>';
 		$names = wp_get_object_terms( $object_id, $field['taxonomy'] );
-		$terms = get_terms( $field['taxonomy'], 'hide_empty=0' );
+		$terms = get_terms( array( 'taxonomy' => $field['taxonomy'], 'hide_empty' => false ) );
 		$i = 1;
 		foreach ( $terms as $term ) {
 			echo '<li><input class="cmb_option" type="checkbox" name="', esc_attr( $field['id'] ), '[]" id="', esc_attr( $field['id'] . $i ), '" value="', esc_attr( $term->slug ), '" ';
@@ -493,7 +493,7 @@ class cmb_Meta_Box_types {
 	public static function file_list( $field, $meta, $object_id ) {
 
 		echo '<input class="cmb_upload_file cmb_upload_list" type="hidden" size="45" id="', esc_attr( $field['id'] ), '" name="', esc_attr( $field['id'] ), '" value="', esc_url( self::esc( $meta, 'esc_url' ) ), '" />';
-		echo '<input class="cmb_upload_button button cmb_upload_list" type="button" value="', esc_attr__( 'Add or Upload File', 'cmb' ), '" />', wp_kses_post( self::desc( true ) );
+		echo '<input class="cmb_upload_button button cmb_upload_list" type="button" value="', esc_attr__( 'Add or Upload File', 'meet-my-team' ), '" />', wp_kses_post( self::desc( true ) );
 
 		echo '<ul id="', esc_attr( $field['id'] ), '_status" class="cmb_media_status attach_list">';
 
@@ -504,7 +504,7 @@ class cmb_Meta_Box_types {
 					echo
 					'<li class="img_status">',
 						wp_kses_post( wp_get_attachment_image( $id, array( 50, 50 ) ) ),
-						'<p><a href="#" class="cmb_remove_file_button">', esc_html__( 'Remove Image', 'cmb' ), '</a></p>
+						'<p><a href="#" class="cmb_remove_file_button">', esc_html__( 'Remove Image', 'meet-my-team' ), '</a></p>
 						<input type="hidden" id="filelist-', esc_attr( $id ), '" name="', esc_attr( $field['id'] ), '[', esc_attr( $id ), ']" value="', esc_attr( $fullurl ), '" />
 					</li>';
 
@@ -515,7 +515,7 @@ class cmb_Meta_Box_types {
 					}
 					echo
 					'<li>',
-						esc_html__( 'File:', 'cmb' ), ' <strong>', esc_html( $title ), '</strong>&nbsp;&nbsp;&nbsp; (<a href="', esc_url( $fullurl ), '" target="_blank" rel="external">', esc_html__( 'Download', 'cmb' ), '</a> / <a href="#" class="cmb_remove_file_button">', esc_html__( 'Remove', 'cmb' ), '</a>)
+						esc_html__( 'File:', 'meet-my-team' ), ' <strong>', esc_html( $title ), '</strong>&nbsp;&nbsp;&nbsp; (<a href="', esc_url( $fullurl ), '" target="_blank" rel="external">', esc_html__( 'Download', 'meet-my-team' ), '</a> / <a href="#" class="cmb_remove_file_button">', esc_html__( 'Remove', 'meet-my-team' ), '</a>)
 						<input type="hidden" id="filelist-', esc_attr( $id ), '" name="', esc_attr( $field['id'] ), '[', esc_attr( $id ), ']" value="', esc_attr( $fullurl ), '" />
 					</li>';
 				}
@@ -531,7 +531,7 @@ class cmb_Meta_Box_types {
 		if ( 'url' == $field['allow'] || ( is_array( $field['allow'] ) && in_array( 'url', $field['allow'] ) ) )
 			$input_type_url = 'text';
 		echo '<input class="cmb_upload_file" type="', esc_attr( $input_type_url ), '" size="45" id="', esc_attr( $field['id'] ), '" name="', esc_attr( $field['id'] ), '" value="', esc_attr( $meta ), '" />';
-		echo '<input class="cmb_upload_button button" type="button" value="', esc_attr__( 'Add or Upload File', 'cmb' ), '" />';
+		echo '<input class="cmb_upload_button button" type="button" value="', esc_attr__( 'Add or Upload File', 'meet-my-team' ), '" />';
 
 		$_id_name = $field['id'] .'_id';
 
@@ -550,7 +550,7 @@ class cmb_Meta_Box_types {
 				if ( self::is_valid_img_ext( $meta ) ) {
 					echo '<div class="img_status">';
 					echo '<img style="max-width: 350px; width: 100%; height: auto;" src="', esc_url( $meta ), '" alt="" />';
-					echo '<p><a href="#" class="cmb_remove_file_button" rel="', esc_attr( $field['id'] ), '">', esc_html__( 'Remove Image', 'cmb' ), '</a></p>';
+					echo '<p><a href="#" class="cmb_remove_file_button" rel="', esc_attr( $field['id'] ), '">', esc_html__( 'Remove Image', 'meet-my-team' ), '</a></p>';
 					echo '</div>';
 				} else {
 					// $file_ext = self::get_file_ext( $meta );
@@ -558,7 +558,7 @@ class cmb_Meta_Box_types {
 					for ( $i = 0; $i < count( $parts ); ++$i ) {
 						$title = $parts[$i];
 					}
-					echo esc_html__( 'File:', 'cmb' ), ' <strong>', esc_html( $title ), '</strong>&nbsp;&nbsp;&nbsp; (<a href="', esc_url( $meta ), '" target="_blank" rel="external">', esc_html__( 'Download', 'cmb' ), '</a> / <a href="#" class="cmb_remove_file_button" rel="', esc_attr( $field['id'] ), '">', esc_html__( 'Remove', 'cmb' ), '</a>)';
+					echo esc_html__( 'File:', 'meet-my-team' ), ' <strong>', esc_html( $title ), '</strong>&nbsp;&nbsp;&nbsp; (<a href="', esc_url( $meta ), '" target="_blank" rel="external">', esc_html__( 'Download', 'meet-my-team' ), '</a> / <a href="#" class="cmb_remove_file_button" rel="', esc_attr( $field['id'] ), '">', esc_html__( 'Remove', 'meet-my-team' ), '</a>)';
 				}
 			}
 		echo '</div>';

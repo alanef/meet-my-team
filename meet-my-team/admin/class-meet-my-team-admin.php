@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 // Include Files
 include_once "includes/class-meet-my-team-build-cpt.php";
@@ -107,8 +110,8 @@ class Meet_My_Team_Admin {
 		 */
 		$this->plugin_screen_hook_suffix = add_submenu_page(
 			'edit.php?post_type=team_members',
-			esc_html__( 'Support this Plugin', $this->plugin_slug ),
-			esc_html__( 'Help this plugin', $this->plugin_slug ),
+			esc_html__( 'Support this Plugin', 'meet-my-team' ),
+			esc_html__( 'Help this plugin', 'meet-my-team' ),
 			'manage_options',
 			$this->plugin_slug . '-settings',
 			array( $this, 'display_plugin_admin_page' )

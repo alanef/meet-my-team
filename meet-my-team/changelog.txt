@@ -10,6 +10,7 @@
 * Fixed: on sites running other Fullworks free plugins, the opt-in notice and menu could belong to the wrong plugin.
 * Fixed: deleting the plugin now also removes its stored opt-in choice.
 * Changed: updated the bundled opt-in library to 1.3.3.
+* Removed: an unused demo file and a stray archive from the plugin package.
 * Changed: tested up to WordPress 7.1.
 
 = 2.1.1 =
