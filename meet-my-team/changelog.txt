@@ -1,5 +1,5 @@
 == Changelog ==
-= Unreleased =
+= 2.2.0 =
 * Added: FAQ entry on how to report security bugs, through the Patchstack Vulnerability Disclosure Program.
 * Security: team member names, designations, emails, links and pictures are now escaped on the front end. A crafted value could previously add script to any page showing the team.
 * Security: shortcode attributes are now escaped and validated. A crafted [meet-my-team] shortcode could previously add script to the page. Container tags are limited to div, section, article, aside, ul, ol, li and span, and align, enable_modal, display_picture, disable_modal_centering and debug accept only their documented values.

@@ -3,7 +3,7 @@ Contributors: Buooy, Fullworks
 Tags: meet my team,team,staff gallery,team members
 Donate link: https://ko-fi.com/wpalan
 Tested up to: 7.1
-Stable tag: 2.1.1
+Stable tag: 2.2.0
 Type: free
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -119,6 +119,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 4. Responsive Modal that displays each team member's information
 
 == Upgrade Notice ==
+
+= 2.2.0 =
+Security release: team member details and shortcode attributes are now escaped, closing stored cross-site scripting on the front end and on the edit screen. Update recommended.
 
 == Changelog ==
 = 2.1.1 =

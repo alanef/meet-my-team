@@ -1,15 +1,171 @@
-# Copyright (C) 2025 meet-my-team
-# This file is distributed under the same license as the meet-my-team package.
+# Copyright (C) 2026 Fullworks
+# This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: meet-my-team\n"
+"Project-Id-Version: Meet My Team 2.2.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/meet-my-team\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: *.js\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"POT-Creation-Date: 2026-10-23T11:15:39+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: meet-my-team\n"
 
+#. Plugin Name of the plugin
+#: meet-my-team.php
+#: admin/includes/class-meet-my-team-build-cpt.php:48
+msgid "Meet My Team"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: meet-my-team.php
+msgid "http://wordpress.org/support/plugin/meet-my-team"
+msgstr ""
+
+#. Description of the plugin
+#: meet-my-team.php
+msgid "Ever needed to display a lot of team members but you find it too lengthy to put into a single page? Meet My Team solves that problem by providing an intuitive interface that allows you to add your team members and display their information in a modal! Sounds great?"
+msgstr ""
+
+#. Author of the plugin
+#: meet-my-team.php
+msgid "Fullworks"
+msgstr ""
+
+#. Author URI of the plugin
+#: meet-my-team.php
+msgid "https://fullworks.net"
+msgstr ""
+
+#: admin/class-meet-my-team-admin.php:113
+msgid "Support this Plugin"
+msgstr ""
+
+#: admin/class-meet-my-team-admin.php:114
+msgid "Help this plugin"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:46
+msgctxt "Post Type General Name"
+msgid "Team Members"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:47
+msgctxt "Post Type Singular Name"
+msgid "Team Members"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:49
+msgid "Parent Team Member"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:50
+msgid "All Members"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:51
+msgid "View Member"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:52
+msgid "Add New Member"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:53
+msgid "Add New"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:54
+msgid "Edit Member"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:55
+msgid "Update Member"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:56
+msgid "Search Member"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:57
+msgid "Not found"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:58
+msgid "Not found in Trash"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:61
+msgid "Team Members"
+msgstr ""
+
+#: admin/includes/class-meet-my-team-build-cpt.php:62
+msgid "Team members is a custom post type for Meet My Team"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_ajax.php:47
+msgid "Please Try Again"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_ajax.php:131
+msgid "Remove Embed"
+msgstr ""
+
+#. translators: %s: link to the URL that could not be embedded
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_ajax.php:136
+#, php-format
+msgid "No oEmbed Results Found for %s. View more info at"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_types.php:150
+msgid "Add Row"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_types.php:185
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_types.php:518
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_types.php:561
+msgid "Remove"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_types.php:496
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_types.php:534
+msgid "Add or Upload File"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_types.php:507
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_types.php:553
+msgid "Remove Image"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_types.php:518
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_types.php:561
+msgid "File:"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_types.php:518
+#: admin/includes/Custom-Metaboxes-and-Fields/helpers/cmb_Meta_Box_types.php:561
+msgid "Download"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/init.php:264
+msgid "Clear"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/init.php:265
+msgid "Default"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/init.php:266
+msgid "Select Color"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/init.php:267
+msgid "Current Color"
+msgstr ""
+
+#: admin/includes/Custom-Metaboxes-and-Fields/init.php:1362
+msgid "Save"
+msgstr ""
