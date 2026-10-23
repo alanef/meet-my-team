@@ -2,7 +2,7 @@
 Contributors: Buooy, Fullworks
 Tags: meet my team,team,staff gallery,team members
 Donate link: https://ko-fi.com/wpalan
-Tested up to: 6.5
+Tested up to: 7.1
 Stable tag: 2.1.1
 Type: free
 License: GPLv2 or later
