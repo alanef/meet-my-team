@@ -76,7 +76,9 @@ class cmb_Meta_Box_Show_Filters {
 		if ( is_admin() ) {
 
 			// If there is no 'page' query var, our filter isn't applicable
-			if ( ! isset( $_GET['page'] ) )
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only: which admin page is showing
+			$current_page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : null;
+			if ( null === $current_page )
 				return $display;
 
 			if ( ! isset( $meta_box['show_on']['value'] ) )
@@ -86,11 +88,11 @@ class cmb_Meta_Box_Show_Filters {
 
 			if ( is_array( $pages ) ) {
 				foreach ( $pages as $page ) {
-					if ( $_GET['page'] == $page )
+					if ( $current_page == $page )
 						return true;
 				}
 			} else {
-				if ( $_GET['page'] == $pages )
+				if ( $current_page == $pages )
 					return true;
 			}
 

@@ -316,8 +316,8 @@ class cmb_Meta_Box {
 		echo '
 		<script type="text/javascript">
 		jQuery(document).ready(function(){
-			jQuery("#' . $this->form_id . '").attr("enctype", "multipart/form-data");
-			jQuery("#' . $this->form_id . '").attr("encoding", "multipart/form-data");
+			jQuery("#' . esc_js( $this->form_id ) . '").attr("enctype", "multipart/form-data");
+			jQuery("#' . esc_js( $this->form_id ) . '").attr("encoding", "multipart/form-data");
 		});
 		</script>';
 	}
@@ -449,25 +449,24 @@ class cmb_Meta_Box {
 			$inline  = ( isset( $field['inline'] ) && $field['inline'] || false !== stripos( $field['type'], '_inline' ) );
 			$classes .= $inline ? ' cmb-inline' : '';
 
-			echo '<tr class="cmb-type-' . sanitize_html_class( $field['type'] ) . ' cmb_id_' . sanitize_html_class( $field['id'] ) . $classes . '">';
+			echo '<tr class="cmb-type-' . sanitize_html_class( $field['type'] ) . ' cmb_id_' . sanitize_html_class( $field['id'] ) . esc_attr( $classes ) . '">';
 
 			if ( $field['type'] == "title" ) {
 				echo '<td colspan="2">';
 			} else {
 				if ( isset( $meta_box['show_names'] ) && $meta_box['show_names'] == true ) {
-					$style = $object_type == 'post' ? ' style="width:18%"' : '';
-					echo '<th' . $style . '><label for="', $field['id'], '">', $field['name'], '</label></th>';
+					echo '<th', ( $object_type == 'post' ? ' style="width:18%"' : '' ), '><label for="', esc_attr( $field['id'] ), '">', wp_kses_post( $field['name'] ), '</label></th>';
 				} else {
-					echo '<label style="display:none;" for="', $field['id'], '">', $field['name'], '</label></th>';
+					echo '<label style="display:none;" for="', esc_attr( $field['id'] ), '">', wp_kses_post( $field['name'] ), '</label></th>';
 				}
 				echo '<td>';
 			}
 
-			echo empty( $field['before'] ) ? '' : $field['before'];
+			echo empty( $field['before'] ) ? '' : wp_kses_post( $field['before'] );
 
 			call_user_func( array( $types, $field['type'] ), $field, $meta, $object_id, $object_type );
 
-			echo empty( $field['after'] ) ? '' : $field['after'];
+			echo empty( $field['after'] ) ? '' : wp_kses_post( $field['after'] );
 
 			echo '</td>', '</tr>';
 		}
@@ -488,11 +487,11 @@ class cmb_Meta_Box {
 		if (
 			// check nonce
 			! isset( $_POST['wp_meta_box_nonce'] )
-			|| ! wp_verify_nonce( $_POST['wp_meta_box_nonce'], self::nonce() )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wp_meta_box_nonce'] ) ), self::nonce() )
 			// check if autosave
 			|| defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE
 			// check user editing permissions
-			|| ( 'page' == $_POST['post_type'] && ! current_user_can( 'edit_page', $post_id ) )
+			|| ( isset( $_POST['post_type'] ) && 'page' == $_POST['post_type'] && ! current_user_can( 'edit_page', $post_id ) )
 			|| ! current_user_can( 'edit_post', $post_id )
 			// get the metabox post_types & compare it to this post_type
 			|| ! in_array( $post_type, $this->_meta_box['pages'] )
@@ -513,7 +512,7 @@ class cmb_Meta_Box {
 		if (
 			// check nonce
 			! isset( $_POST['wp_meta_box_nonce'] )
-			|| ! wp_verify_nonce( $_POST['wp_meta_box_nonce'], self::nonce() )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wp_meta_box_nonce'] ) ), self::nonce() )
 		) {
 			return $user_id;
 		}
@@ -559,6 +558,9 @@ class cmb_Meta_Box {
 			}
 
 			$old = self::get_data();
+			// Callers verify the nonce before save_fields() runs. The value stays slashed because
+			// update_metadata() unslashes it, and it is sanitized by sanitization_cb() below.
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$new = isset( $_POST[ $field['id'] ] ) ? $_POST[ $field['id'] ] : null;
 
 
@@ -598,12 +600,14 @@ class cmb_Meta_Box {
 						$_new_id = '';
 					} else {
 						// otherwise get the file ID
-						$_new_id = isset( $_POST[ $_id_name ] ) ? $_POST[ $_id_name ] : null;
+						// phpcs:disable WordPress.Security.NonceVerification.Missing -- verified by the caller of save_fields()
+						$_new_id = isset( $_POST[ $_id_name ] ) ? sanitize_text_field( wp_unslash( $_POST[ $_id_name ] ) ) : null;
 
 						// If there is no ID saved yet, try to get it from the url
-						if ( isset( $_POST[ $field['id'] ] ) && $_POST[ $field['id'] ] && ! $_new_id ) {
-							$_new_id = self::image_id_from_url( esc_url_raw( $_POST[ $field['id'] ] ) );
+						if ( ! empty( $_POST[ $field['id'] ] ) && ! $_new_id ) {
+							$_new_id = self::image_id_from_url( esc_url_raw( wp_unslash( $_POST[ $field['id'] ] ) ) );
 						}
+						// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 					}
 
@@ -767,12 +771,14 @@ class cmb_Meta_Box {
 		switch ( self::get_object_type() ) {
 			case 'user':
 				$object_id = isset( $GLOBALS['user_ID'] ) ? $GLOBALS['user_ID'] : $object_id;
-				$object_id = isset( $_REQUEST['user_id'] ) ? $_REQUEST['user_id'] : $object_id;
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only: which user's fields to load
+				$object_id = isset( $_REQUEST['user_id'] ) ? absint( wp_unslash( $_REQUEST['user_id'] ) ) : $object_id;
 				break;
 
 			default:
 				$object_id = isset( $GLOBALS['post']->ID ) ? $GLOBALS['post']->ID : $object_id;
-				$object_id = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : $object_id;
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only: which post's fields to load
+				$object_id = isset( $_REQUEST['post'] ) ? absint( wp_unslash( $_REQUEST['post'] ) ) : $object_id;
 				break;
 		}
 
@@ -1328,7 +1334,7 @@ function cmb_metabox_form( $meta_box, $object_id, $echo = true ) {
 	if (
 		// check nonce
 		isset( $_POST['submit-cmb'], $_POST['object_id'], $_POST['wp_meta_box_nonce'] )
-		&& wp_verify_nonce( $_POST['wp_meta_box_nonce'], cmb_Meta_Box::nonce() )
+		&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wp_meta_box_nonce'] ) ), cmb_Meta_Box::nonce() )
 		&& $_POST['object_id'] == $object_id
 	) {
 		cmb_save_metabox_fields( $meta_box, $object_id );
@@ -1344,9 +1350,10 @@ function cmb_metabox_form( $meta_box, $object_id, $echo = true ) {
 
 	$form_format = apply_filters( 'cmb_frontend_form_format', '<form class="cmb-form" method="post" id="%s" enctype="multipart/form-data" encoding="multipart/form-data"><input type="hidden" name="object_id" value="%s">%s<input type="submit" name="submit-cmb" value="%s" class="button-primary"></form>', $object_id, $meta_box, $form );
 
-	$form = sprintf( $form_format, $meta_box['id'], $object_id, $form, __( 'Save', 'cmb' ) );
+	$form = sprintf( $form_format, esc_attr( $meta_box['id'] ), esc_attr( $object_id ), $form, esc_attr__( 'Save', 'cmb' ) );
 
 	if ( $echo ) {
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the fields come from cmb_print_metabox(), which escapes each one; the format's values are escaped above
 		echo $form;
 	}
 

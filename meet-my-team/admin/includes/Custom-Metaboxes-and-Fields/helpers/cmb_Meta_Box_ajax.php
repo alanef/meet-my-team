@@ -36,11 +36,11 @@ class cmb_Meta_Box_ajax {
 	public function oembed_handler() {
 
 		// verify our nonce
-		if ( ! ( isset( $_REQUEST['cmb_ajax_nonce'], $_REQUEST['oembed_url'] ) && wp_verify_nonce( $_REQUEST['cmb_ajax_nonce'], 'ajax_nonce' ) ) )
+		if ( ! ( isset( $_REQUEST['cmb_ajax_nonce'], $_REQUEST['oembed_url'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['cmb_ajax_nonce'] ) ), 'ajax_nonce' ) ) )
 			die();
 
 		// sanitize our search string
-		$oembed_string = sanitize_text_field( $_REQUEST['oembed_url'] );
+		$oembed_string = sanitize_text_field( wp_unslash( $_REQUEST['oembed_url'] ) );
 
 		// send back error if empty
 		if ( empty( $oembed_string ) )
@@ -55,10 +55,10 @@ class cmb_Meta_Box_ajax {
 		$embed_args = array( 'width' => $embed_width );
 
 		// Get embed code (or fallback link)
-		$html = self::get_oembed( $oembed_url, $_REQUEST['object_id'], array(
-			'object_type' => isset( $_REQUEST['object_type'] ) ? $_REQUEST['object_type'] : 'post',
+		$html = self::get_oembed( $oembed_url, isset( $_REQUEST['object_id'] ) ? absint( wp_unslash( $_REQUEST['object_id'] ) ) : 0, array(
+			'object_type' => isset( $_REQUEST['object_type'] ) ? sanitize_key( wp_unslash( $_REQUEST['object_type'] ) ) : 'post',
 			'oembed_args' => $embed_args,
-			'field_id' => $_REQUEST['field_id'],
+			'field_id' => isset( $_REQUEST['field_id'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['field_id'] ) ) : '',
 		) );
 
 		self::send_result( $html );

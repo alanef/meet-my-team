@@ -75,6 +75,7 @@ class cmb_Meta_Box_types {
 	private static function desc( $paragraph = false ) {
 		$tag = $paragraph ? 'p' : 'span';
 		$desc = cmb_Meta_Box::$field['desc'];
+		// Developer-supplied HTML; callers echo this through wp_kses_post()
 		return "\n<$tag class=\"cmb_metabox_description\">$desc</$tag>\n";
 	}
 
@@ -106,13 +107,13 @@ class cmb_Meta_Box_types {
 
 		if ( !empty( $meta ) ) {
 			foreach ( (array) $meta as $val ) {
-				self::repeat_row( self::text_input( $class, $val ) );
+				self::repeat_row( $class, $val );
 			}
 		} else {
-			self::repeat_row( self::text_input( $class ) );
+			self::repeat_row( $class );
 		}
 
-		self::empty_row( self::text_input( $class ) );
+		self::empty_row( $class );
 		self::repeat_table_close();
 		// reset iterator
 		self::$iterator = 0;
@@ -123,14 +124,13 @@ class cmb_Meta_Box_types {
 	 * @since  1.0.0
 	 * @param  string  $class Field's class attribute
 	 * @param  mixed   $val   Field's meta value
-	 * @return string         HTML text input
 	 */
 	private static function text_input( $class = '', $val = '' ) {
 		self::$iterator = self::$iterator ? self::$iterator + 1 : 1;
-		$before = '';
+		$id = cmb_Meta_Box::$field['id'];
 		if ( cmb_Meta_Box::$field['type'] == 'text_money' )
-			$before = ! empty( cmb_Meta_Box::$field['before'] ) ? ' ' : '$ ';
-		return $before . '<input type="'. self::$type .'" class="'. $class .'" name="'. cmb_Meta_Box::$field['id'] .'[]" id="'. cmb_Meta_Box::$field['id'] .'_'. self::$iterator .'" value="'. self::esc( $val ) .'" data-id="'. cmb_Meta_Box::$field['id'] .'" data-count="'. self::$iterator .'"/>';
+			echo ! empty( cmb_Meta_Box::$field['before'] ) ? ' ' : '$ ';
+		echo '<input type="', esc_attr( self::$type ), '" class="', esc_attr( $class ), '" name="', esc_attr( $id ), '[]" id="', esc_attr( $id ), '_', (int) self::$iterator, '" value="', esc_attr( self::esc( $val ) ), '" data-id="', esc_attr( $id ), '" data-count="', (int) self::$iterator, '"/>';
 	}
 
 	/**
@@ -139,7 +139,7 @@ class cmb_Meta_Box_types {
 	 * @param  string $class Field's class attribute
 	 */
 	private static function repeat_table_open( $class = '' ) {
-		echo self::desc(), '<table id="', cmb_Meta_Box::$field['id'], '_repeat" class="cmb-repeat-table ', $class ,'"><tbody>';
+		echo wp_kses_post( self::desc() ), '<table id="', esc_attr( cmb_Meta_Box::$field['id'] ), '_repeat" class="cmb-repeat-table ', esc_attr( $class ), '"><tbody>';
 	}
 
 	/**
@@ -147,35 +147,42 @@ class cmb_Meta_Box_types {
 	 * @since 1.0.0
 	 */
 	private static function repeat_table_close() {
-		echo '</tbody></table><p class="add-row"><a data-selector="', cmb_Meta_Box::$field['id'] ,'_repeat" class="add-row-button button" href="#">'. __( 'Add Row', 'cmb' ) .'</a></p>';
+		echo '</tbody></table><p class="add-row"><a data-selector="', esc_attr( cmb_Meta_Box::$field['id'] ), '_repeat" class="add-row-button button" href="#">', esc_html__( 'Add Row', 'cmb' ), '</a></p>';
 	}
 
 	/**
 	 * Generates table row markup for repeatable fields
 	 * @since 1.0.0
-	 * @param string $input Table cell markup
+	 * @param string $class Field's class attribute
+	 * @param mixed  $val   Field's meta value
 	 */
-	private static function repeat_row( $input ) {
-		echo '<tr class="repeat-row">', self::repeat_cell( $input ) ,'</tr>';
+	private static function repeat_row( $class, $val = '' ) {
+		echo '<tr class="repeat-row">';
+		self::repeat_cell( $class, $val );
+		echo '</tr>';
 	}
 
 	/**
 	 * Generates the empty table row markup (for duplication) for repeatable fields
 	 * @since 1.0.0
-	 * @param string $input Table cell markup
+	 * @param string $class Field's class attribute
 	 */
-	private static function empty_row( $input ) {
-		echo '<tr class="empty-row">', self::repeat_cell( $input ) ,'</tr>';
+	private static function empty_row( $class ) {
+		echo '<tr class="empty-row">';
+		self::repeat_cell( $class );
+		echo '</tr>';
 	}
 
 	/**
 	 * Generates table cell markup for repeatable fields
 	 * @since  1.0.0
-	 * @param  string $input Text input field
-	 * @return string        HTML table cell markup
+	 * @param  string $class Field's class attribute
+	 * @param  mixed  $val   Field's meta value
 	 */
-	private static function repeat_cell( $input ) {
-		return '<td>'. $input .'</td><td class="remove-row"><a class="button remove-row-button" href="#">'. __( 'Remove', 'cmb' ) .'</a></td>';
+	private static function repeat_cell( $class, $val = '' ) {
+		echo '<td>';
+		self::text_input( $class, $val );
+		echo '</td><td class="remove-row"><a class="button remove-row-button" href="#">', esc_html__( 'Remove', 'cmb' ), '</a></td>';
 	}
 
 	/**
@@ -246,7 +253,7 @@ class cmb_Meta_Box_types {
 			return self::repeat_text_field( $meta );
 		}
 
-		echo '<input type="text" class="regular-text" name="', $field['id'], '" id="', $field['id'], '" value="', self::esc( $meta ), '" />', self::desc( true );
+		echo '<input type="text" class="regular-text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( self::esc( $meta ) ), '" />', wp_kses_post( self::desc( true ) );
 	}
 
 	public static function text_small( $field, $meta ) {
@@ -254,14 +261,14 @@ class cmb_Meta_Box_types {
 			return self::repeat_text_field( $meta, 'cmb_text_small' );
 		}
 
-		echo '<input class="cmb_text_small" type="text" name="', $field['id'], '" id="', $field['id'], '" value="', self::esc( $meta ), '" />', self::desc();
+		echo '<input class="cmb_text_small" type="text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( self::esc( $meta ) ), '" />', wp_kses_post( self::desc() );
 	}
 
 	public static function text_medium( $field, $meta ) {
 		if ( $field['repeatable'] ) {
 			return self::repeat_text_field( $meta, 'cmb_text_medium' );
 		}
-		echo '<input class="cmb_text_medium" type="text" name="', $field['id'], '" id="', $field['id'], '" value="', self::esc( $meta ), '" />', self::desc();
+		echo '<input class="cmb_text_medium" type="text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( self::esc( $meta ) ), '" />', wp_kses_post( self::desc() );
 	}
 
 	public static function text_email( $field, $meta ) {
@@ -269,7 +276,7 @@ class cmb_Meta_Box_types {
 			return self::repeat_text_field( $meta, 'cmb_text_email cmb_text_medium', 'email' );
 		}
 
-		echo '<input class="cmb_text_email cmb_text_medium" type="email" name="', $field['id'], '" id="', $field['id'], '" value="', self::esc( $meta ), '" />', self::desc( true );
+		echo '<input class="cmb_text_email cmb_text_medium" type="email" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( self::esc( $meta ) ), '" />', wp_kses_post( self::desc( true ) );
 	}
 
 	public static function text_url( $field, $meta ) {
@@ -277,15 +284,15 @@ class cmb_Meta_Box_types {
 			return self::repeat_text_field( $meta, 'cmb_text_url cmb_text_medium' );
 		}
 
-		echo '<input class="cmb_text_url cmb_text_medium regular-text" type="text" name="', $field['id'], '" id="', $field['id'], '" value="', self::esc( $meta, 'esc_url' ), '" />', self::desc( true );
+		echo '<input class="cmb_text_url cmb_text_medium regular-text" type="text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_url( self::esc( $meta, 'esc_url' ) ), '" />', wp_kses_post( self::desc( true ) );
 	}
 
 	public static function text_date( $field, $meta ) {
-		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', $field['id'], '" id="', $field['id'], '" value="', self::esc( $meta ), '" />', self::desc();
+		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( self::esc( $meta ) ), '" />', wp_kses_post( self::desc() );
 	}
 
 	public static function text_date_timestamp( $field, $meta ) {
-		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', $field['id'], '" id="', $field['id'], '" value="', ! empty( $meta ) ? date( 'm\/d\/Y', $meta ) : $field['default'], '" />', self::desc();
+		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( ! empty( $meta ) ? date( 'm\/d\/Y', $meta ) : $field['default'] ), '" />', wp_kses_post( self::desc() );
 	}
 
 	public static function text_datetime_timestamp( $field, $meta, $object_id ) {
@@ -296,8 +303,8 @@ class cmb_Meta_Box_types {
 			$meta -= $tz_offset;
 		}
 
-		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', $field['id'], '[date]" id="', $field['id'], '_date" value="', ! empty( $meta ) ? date( 'm\/d\/Y', $meta ) : $field['default'], '" />';
-		echo '<input class="cmb_timepicker text_time" type="text" name="', $field['id'], '[time]" id="', $field['id'], '_time" value="', ! empty( $meta ) ? date( 'h:i A', $meta ) : $field['default'], '" />', self::desc();
+		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', esc_attr( $field['id'] ), '[date]" id="', esc_attr( $field['id'] ), '_date" value="', esc_attr( ! empty( $meta ) ? date( 'm\/d\/Y', $meta ) : $field['default'] ), '" />';
+		echo '<input class="cmb_timepicker text_time" type="text" name="', esc_attr( $field['id'] ), '[time]" id="', esc_attr( $field['id'] ), '_time" value="', esc_attr( ! empty( $meta ) ? date( 'h:i A', $meta ) : $field['default'] ), '" />', wp_kses_post( self::desc() );
 	}
 
 	public static function text_datetime_timestamp_timezone( $field, $meta ) {
@@ -312,16 +319,16 @@ class cmb_Meta_Box_types {
 			$meta = $datetime->getTimestamp() + $tz->getOffset( new DateTime('NOW') );
 		}
 
-		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', $field['id'], '[date]" id="', $field['id'], '_date" value="', ! empty( $meta ) ? date( 'm\/d\/Y', $meta ) : $field['default'], '" />';
-		echo '<input class="cmb_timepicker text_time" type="text" name="', $field['id'], '[time]" id="', $field['id'], '_time" value="', ! empty( $meta ) ? date( 'h:i A', $meta ) : $field['default'], '" />';
+		echo '<input class="cmb_text_small cmb_datepicker" type="text" name="', esc_attr( $field['id'] ), '[date]" id="', esc_attr( $field['id'] ), '_date" value="', esc_attr( ! empty( $meta ) ? date( 'm\/d\/Y', $meta ) : $field['default'] ), '" />';
+		echo '<input class="cmb_timepicker text_time" type="text" name="', esc_attr( $field['id'] ), '[time]" id="', esc_attr( $field['id'] ), '_time" value="', esc_attr( ! empty( $meta ) ? date( 'h:i A', $meta ) : $field['default'] ), '" />';
 
-		echo '<select name="', $field['id'], '[timezone]" id="', $field['id'], '_timezone">';
-		echo wp_timezone_choice( $tzstring );
-		echo '</select>', self::desc();
+		echo '<select name="', esc_attr( $field['id'] ), '[timezone]" id="', esc_attr( $field['id'] ), '_timezone">';
+		echo wp_kses( wp_timezone_choice( $tzstring ), self::timezone_choice_tags() );
+		echo '</select>', wp_kses_post( self::desc() );
 	}
 
 	public static function text_time( $field, $meta ) {
-		echo '<input class="cmb_timepicker text_time" type="text" name="', $field['id'], '" id="', $field['id'], '" value="', self::esc( $meta ), '" />', self::desc();
+		echo '<input class="cmb_timepicker text_time" type="text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( self::esc( $meta ) ), '" />', wp_kses_post( self::desc() );
 	}
 
 	public static function select_timezone( $field, $meta ) {
@@ -329,9 +336,20 @@ class cmb_Meta_Box_types {
 		if ( '' === $meta )
 			$meta = cmb_Meta_Box::timezone_string();
 
-		echo '<select name="', $field['id'], '" id="', $field['id'], '">';
-		echo wp_timezone_choice( $meta );
+		echo '<select name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '">';
+		echo wp_kses( wp_timezone_choice( $meta ), self::timezone_choice_tags() );
 		echo '</select>';
+	}
+
+	/**
+	 * Tags wp_timezone_choice() outputs, for wp_kses()
+	 * @return array
+	 */
+	private static function timezone_choice_tags() {
+		return array(
+			'optgroup' => array( 'label' => true ),
+			'option'   => array( 'value' => true, 'selected' => true ),
+		);
 	}
 
 	public static function text_money( $field, $meta ) {
@@ -339,7 +357,7 @@ class cmb_Meta_Box_types {
 			return self::repeat_text_field( $meta, 'cmb_text_money' );
 		}
 
-		echo ! empty( $field['before'] ) ? '' : '$', ' <input class="cmb_text_money" type="text" name="', $field['id'], '" id="', $field['id'], '" value="', self::esc( $meta ), '" />', self::desc();
+		echo ! empty( $field['before'] ) ? '' : '$', ' <input class="cmb_text_money" type="text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( self::esc( $meta ) ), '" />', wp_kses_post( self::desc() );
 	}
 
 	public static function colorpicker( $field, $meta ) {
@@ -349,28 +367,29 @@ class cmb_Meta_Box_types {
 			$meta = '#' . $meta;
 		elseif ( ! preg_match( '/^#' . $hex_color . '/i', $meta ) ) // Value doesn't match #123abc, so sanitize to just #.
 			$meta = "#";
-		echo '<input class="cmb_colorpicker cmb_text_small" type="text" name="', $field['id'], '" id="', $field['id'], '" value="', $meta, '" />', self::desc();
+		echo '<input class="cmb_colorpicker cmb_text_small" type="text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( $meta ), '" />', wp_kses_post( self::desc() );
 	}
 
+	// esc() runs any escape_cb or filter; 'strval' skips its default so esc_textarea() runs once, at output
 	public static function textarea( $field, $meta ) {
-		echo '<textarea name="', $field['id'], '" id="', $field['id'], '" cols="60" rows="10">', self::esc( $meta, 'esc_textarea' ), '</textarea>', self::desc( true );
+		echo '<textarea name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" cols="60" rows="10">', esc_textarea( self::esc( $meta, 'strval' ) ), '</textarea>', wp_kses_post( self::desc( true ) );
 	}
 
 	public static function textarea_small( $field, $meta ) {
-		echo '<textarea name="', $field['id'], '" id="', $field['id'], '" cols="60" rows="4">', self::esc( $meta, 'esc_textarea' ), '</textarea>', self::desc( true );
+		echo '<textarea name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" cols="60" rows="4">', esc_textarea( self::esc( $meta, 'strval' ) ), '</textarea>', wp_kses_post( self::desc( true ) );
 	}
 
 	public static function textarea_code( $field, $meta ) {
-		echo '<pre><textarea name="', $field['id'], '" id="', $field['id'], '" cols="60" rows="10" class="cmb_textarea_code">', ! empty( $meta ) ? $meta : $field['default'], '</textarea></pre>', self::desc( true );
+		echo '<pre><textarea name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" cols="60" rows="10" class="cmb_textarea_code">', esc_textarea( ! empty( $meta ) ? $meta : $field['default'] ), '</textarea></pre>', wp_kses_post( self::desc( true ) );
 	}
 
 	public static function select( $field, $meta ) {
 		$meta = self::esc( $meta );
-		echo '<select name="', $field['id'], '" id="', $field['id'], '">';
+		echo '<select name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '">';
 		foreach ($field['options'] as $option) {
-			echo '<option value="', $option['value'], '"', $meta == $option['value'] ? ' selected="selected"' : '', '>', $option['name'], '</option>';
+			echo '<option value="', esc_attr( $option['value'] ), '"', $meta == $option['value'] ? ' selected="selected"' : '', '>', esc_html( $option['name'] ), '</option>';
 		}
-		echo '</select>', self::desc( true );
+		echo '</select>', wp_kses_post( self::desc( true ) );
 	}
 
 	public static function radio( $field, $meta ) {
@@ -378,10 +397,10 @@ class cmb_Meta_Box_types {
 		echo '<ul>';
 		$i = 1;
 		foreach ($field['options'] as $option) {
-			echo '<li class="cmb_option"><input type="radio" name="', $field['id'], '" id="', $field['id'], $i,'" value="', $option['value'], '" ', checked( $meta == $option['value'] ), ' /> <label for="', $field['id'], $i, '">', $option['name'].'</label></li>';
+			echo '<li class="cmb_option"><input type="radio" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] . $i ), '" value="', esc_attr( $option['value'] ), '" ', checked( $meta == $option['value'], true, false ), ' /> <label for="', esc_attr( $field['id'] . $i ), '">', wp_kses_post( $option['name'] ), '</label></li>';
 			$i++;
 		}
-		echo '</ul>', self::desc( true );
+		echo '</ul>', wp_kses_post( self::desc( true ) );
 	}
 
 	public static function radio_inline( $field, $meta ) {
@@ -389,17 +408,17 @@ class cmb_Meta_Box_types {
 	}
 
 	public static function checkbox( $field, $meta ) {
-		echo '<input class="cmb_option" type="checkbox" name="', $field['id'], '" id="', $field['id'], '" ', checked( ! empty( $meta ) ), ' value="on"/> <label for="', $field['id'], '">', self::desc() ,'</label>';
+		echo '<input class="cmb_option" type="checkbox" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" ', checked( ! empty( $meta ), true, false ), ' value="on"/> <label for="', esc_attr( $field['id'] ), '">', wp_kses_post( self::desc() ), '</label>';
 	}
 
 	public static function multicheck( $field, $meta ) {
 		echo '<ul>';
 		$i = 1;
 		foreach ( $field['options'] as $value => $name ) {
-			echo '<li><input class="cmb_option" type="checkbox" name="', $field['id'], '[]" id="', $field['id'], $i, '" value="', $value, '" ', checked( is_array( $meta ) && in_array( $value, $meta ) ), '  /> <label for="', $field['id'], $i, '">', $name, '</label></li>';
+			echo '<li><input class="cmb_option" type="checkbox" name="', esc_attr( $field['id'] ), '[]" id="', esc_attr( $field['id'] . $i ), '" value="', esc_attr( $value ), '" ', checked( is_array( $meta ) && in_array( $value, $meta ), true, false ), '  /> <label for="', esc_attr( $field['id'] . $i ), '">', wp_kses_post( $name ), '</label></li>';
 			$i++;
 		}
-		echo '</ul>', self::desc();
+		echo '</ul>', wp_kses_post( self::desc() );
 	}
 
 	public static function multicheck_inline( $field, $meta ) {
@@ -408,27 +427,27 @@ class cmb_Meta_Box_types {
 
 	public static function title( $field, $meta, $object_id, $object_type ) {
 		$tag = $object_type == 'post' ? 'h5' : 'h3';
-		echo '<'. $tag .' class="cmb_metabox_title">', $field['name'], '</'. $tag .'>', self::desc( true );
+		echo '<', tag_escape( $tag ), ' class="cmb_metabox_title">', wp_kses_post( $field['name'] ), '</', tag_escape( $tag ), '>', wp_kses_post( self::desc( true ) );
 	}
 
 	public static function wysiwyg( $field, $meta ) {
 		wp_editor( self::esc( $meta, 'esc_textarea' ), $field['id'], isset( $field['options'] ) ? $field['options'] : array() );
-		echo self::desc( true );
+		echo wp_kses_post( self::desc( true ) );
 	}
 
 	public static function taxonomy_select( $field, $meta, $object_id ) {
 
-		echo '<select name="', $field['id'], '" id="', $field['id'], '">';
+		echo '<select name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '">';
 		$names = wp_get_object_terms( $object_id, $field['taxonomy'] );
 		$terms = get_terms( $field['taxonomy'], 'hide_empty=0' );
 		foreach ( $terms as $term ) {
 			if ( !is_wp_error( $names ) && !empty( $names ) && ! strcmp( $term->slug, $names[0]->slug ) ) {
-				echo '<option value="' . $term->slug . '" selected>' . $term->name . '</option>';
+				echo '<option value="', esc_attr( $term->slug ), '" selected>', esc_html( $term->name ), '</option>';
 			} else {
-				echo '<option value="' . $term->slug . '  ' , $meta == $term->slug ? $meta : ' ' ,'  ">' . $term->name . '</option>';
+				echo '<option value="', esc_attr( $term->slug . '  ' . ( $meta == $term->slug ? $meta : ' ' ) . '  ' ), '">', esc_html( $term->name ), '</option>';
 			}
 		}
-		echo '</select>', self::desc( true );
+		echo '</select>', wp_kses_post( self::desc( true ) );
 	}
 
 	public static function taxonomy_radio( $field, $meta, $object_id ) {
@@ -440,10 +459,10 @@ class cmb_Meta_Box_types {
 		foreach ( $terms as $term ) {
 			$checked = ( !is_wp_error( $names ) && !empty( $names ) && !strcmp( $term->slug, $names[0]->slug ) );
 
-			echo '<li class="cmb_option"><input type="radio" name="', $field['id'], '" id="', $field['id'], $i,'" value="'. $term->slug . '" ', checked( $checked ), ' /> <label for="', $field['id'], $i, '">' . $term->name . '</label></li>';
+			echo '<li class="cmb_option"><input type="radio" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] . $i ), '" value="', esc_attr( $term->slug ), '" ', checked( $checked, true, false ), ' /> <label for="', esc_attr( $field['id'] . $i ), '">', esc_html( $term->name ), '</label></li>';
 			$i++;
 		}
-		echo '</ul>', self::desc( true );
+		echo '</ul>', wp_kses_post( self::desc( true ) );
 	}
 
 	public static function taxonomy_radio_inline( $field, $meta ) {
@@ -456,15 +475,15 @@ class cmb_Meta_Box_types {
 		$terms = get_terms( $field['taxonomy'], 'hide_empty=0' );
 		$i = 1;
 		foreach ( $terms as $term ) {
-			echo '<li><input class="cmb_option" type="checkbox" name="', $field['id'], '[]" id="', $field['id'], $i,'" value="'. $term->slug . '" ';
+			echo '<li><input class="cmb_option" type="checkbox" name="', esc_attr( $field['id'] ), '[]" id="', esc_attr( $field['id'] . $i ), '" value="', esc_attr( $term->slug ), '" ';
 			foreach ($names as $name) {
 				checked( $term->slug == $name->slug );
 			}
 
-			echo ' /> <label for="', $field['id'], $i, '">' . $term->name . '</label></li>';
+			echo ' /> <label for="', esc_attr( $field['id'] . $i ), '">', esc_html( $term->name ), '</label></li>';
 			$i++;
 		}
-		echo '</ul>', self::desc();
+		echo '</ul>', wp_kses_post( self::desc() );
 	}
 
 	public static function taxonomy_multicheck_inline( $field, $meta ) {
@@ -473,10 +492,10 @@ class cmb_Meta_Box_types {
 
 	public static function file_list( $field, $meta, $object_id ) {
 
-		echo '<input class="cmb_upload_file cmb_upload_list" type="hidden" size="45" id="', $field['id'], '" name="', $field['id'], '" value="', self::esc( $meta, 'esc_url' ), '" />';
-		echo '<input class="cmb_upload_button button cmb_upload_list" type="button" value="'. __( 'Add or Upload File', 'cmb' ) .'" />', self::desc( true );
+		echo '<input class="cmb_upload_file cmb_upload_list" type="hidden" size="45" id="', esc_attr( $field['id'] ), '" name="', esc_attr( $field['id'] ), '" value="', esc_url( self::esc( $meta, 'esc_url' ) ), '" />';
+		echo '<input class="cmb_upload_button button cmb_upload_list" type="button" value="', esc_attr__( 'Add or Upload File', 'cmb' ), '" />', wp_kses_post( self::desc( true ) );
 
-		echo '<ul id="', $field['id'], '_status" class="cmb_media_status attach_list">';
+		echo '<ul id="', esc_attr( $field['id'] ), '_status" class="cmb_media_status attach_list">';
 
 		if ( $meta ) {
 
@@ -484,9 +503,9 @@ class cmb_Meta_Box_types {
 				if ( self::is_valid_img_ext( $fullurl ) ) {
 					echo
 					'<li class="img_status">',
-						wp_get_attachment_image( $id, array( 50, 50 ) ),
-						'<p><a href="#" class="cmb_remove_file_button">'. __( 'Remove Image', 'cmb' ) .'</a></p>
-						<input type="hidden" id="filelist-', $id ,'" name="', $field['id'] ,'[', $id ,']" value="', $fullurl ,'" />
+						wp_kses_post( wp_get_attachment_image( $id, array( 50, 50 ) ) ),
+						'<p><a href="#" class="cmb_remove_file_button">', esc_html__( 'Remove Image', 'cmb' ), '</a></p>
+						<input type="hidden" id="filelist-', esc_attr( $id ), '" name="', esc_attr( $field['id'] ), '[', esc_attr( $id ), ']" value="', esc_attr( $fullurl ), '" />
 					</li>';
 
 				} else {
@@ -496,8 +515,8 @@ class cmb_Meta_Box_types {
 					}
 					echo
 					'<li>',
-						__( 'File:', 'cmb' ), ' <strong>', $title, '</strong>&nbsp;&nbsp;&nbsp; (<a href="', $fullurl, '" target="_blank" rel="external">'. __( 'Download', 'cmb' ) .'</a> / <a href="#" class="cmb_remove_file_button">'. __( 'Remove', 'cmb' ) .'</a>)
-						<input type="hidden" id="filelist-', $id ,'" name="', $field['id'] ,'[', $id ,']" value="', $fullurl ,'" />
+						esc_html__( 'File:', 'cmb' ), ' <strong>', esc_html( $title ), '</strong>&nbsp;&nbsp;&nbsp; (<a href="', esc_url( $fullurl ), '" target="_blank" rel="external">', esc_html__( 'Download', 'cmb' ), '</a> / <a href="#" class="cmb_remove_file_button">', esc_html__( 'Remove', 'cmb' ), '</a>)
+						<input type="hidden" id="filelist-', esc_attr( $id ), '" name="', esc_attr( $field['id'] ), '[', esc_attr( $id ), ']" value="', esc_attr( $fullurl ), '" />
 					</li>';
 				}
 			}
@@ -511,8 +530,8 @@ class cmb_Meta_Box_types {
 		$input_type_url = 'hidden';
 		if ( 'url' == $field['allow'] || ( is_array( $field['allow'] ) && in_array( 'url', $field['allow'] ) ) )
 			$input_type_url = 'text';
-		echo '<input class="cmb_upload_file" type="' . $input_type_url . '" size="45" id="', $field['id'], '" name="', $field['id'], '" value="', $meta, '" />';
-		echo '<input class="cmb_upload_button button" type="button" value="'. __( 'Add or Upload File', 'cmb' ) .'" />';
+		echo '<input class="cmb_upload_file" type="', esc_attr( $input_type_url ), '" size="45" id="', esc_attr( $field['id'] ), '" name="', esc_attr( $field['id'] ), '" value="', esc_attr( $meta ), '" />';
+		echo '<input class="cmb_upload_button button" type="button" value="', esc_attr__( 'Add or Upload File', 'cmb' ), '" />';
 
 		$_id_name = $field['id'] .'_id';
 
@@ -523,15 +542,15 @@ class cmb_Meta_Box_types {
 			$_id_meta = cmb_Meta_Box::image_id_from_url( esc_url_raw( $meta ) );
 		}
 
-		echo '<input class="cmb_upload_file_id" type="hidden" id="', $_id_name, '" name="', $_id_name, '" value="', $_id_meta, '" />',
-		self::desc( true ),
-		'<div id="', $field['id'], '_status" class="cmb_media_status">';
+		echo '<input class="cmb_upload_file_id" type="hidden" id="', esc_attr( $_id_name ), '" name="', esc_attr( $_id_name ), '" value="', esc_attr( $_id_meta ), '" />',
+		wp_kses_post( self::desc( true ) ),
+		'<div id="', esc_attr( $field['id'] ), '_status" class="cmb_media_status">';
 			if ( ! empty( $meta ) ) {
 
 				if ( self::is_valid_img_ext( $meta ) ) {
 					echo '<div class="img_status">';
-					echo '<img style="max-width: 350px; width: 100%; height: auto;" src="', $meta, '" alt="" />';
-					echo '<p><a href="#" class="cmb_remove_file_button" rel="', $field['id'], '">'. __( 'Remove Image', 'cmb' ) .'</a></p>';
+					echo '<img style="max-width: 350px; width: 100%; height: auto;" src="', esc_url( $meta ), '" alt="" />';
+					echo '<p><a href="#" class="cmb_remove_file_button" rel="', esc_attr( $field['id'] ), '">', esc_html__( 'Remove Image', 'cmb' ), '</a></p>';
 					echo '</div>';
 				} else {
 					// $file_ext = self::get_file_ext( $meta );
@@ -539,23 +558,27 @@ class cmb_Meta_Box_types {
 					for ( $i = 0; $i < count( $parts ); ++$i ) {
 						$title = $parts[$i];
 					}
-					echo __( 'File:', 'cmb' ), ' <strong>', $title, '</strong>&nbsp;&nbsp;&nbsp; (<a href="', $meta, '" target="_blank" rel="external">'. __( 'Download', 'cmb' ) .'</a> / <a href="#" class="cmb_remove_file_button" rel="', $field['id'], '">'. __( 'Remove', 'cmb' ) .'</a>)';
+					echo esc_html__( 'File:', 'cmb' ), ' <strong>', esc_html( $title ), '</strong>&nbsp;&nbsp;&nbsp; (<a href="', esc_url( $meta ), '" target="_blank" rel="external">', esc_html__( 'Download', 'cmb' ), '</a> / <a href="#" class="cmb_remove_file_button" rel="', esc_attr( $field['id'] ), '">', esc_html__( 'Remove', 'cmb' ), '</a>)';
 				}
 			}
 		echo '</div>';
 	}
 
 	public static function oembed( $field, $meta, $object_id, $object_type ) {
-		echo '<input class="cmb_oembed regular-text" type="text" name="', $field['id'], '" id="', $field['id'], '" value="', self::esc( $meta ), '" data-objectid="', $object_id ,'" data-objecttype="', $object_type ,'" />', self::desc( true );
-		echo '<p class="cmb-spinner spinner" style="display:none;"><img src="'. admin_url( '/images/wpspin_light.gif' ) .'" alt="spinner"/></p>';
-		echo '<div id="', $field['id'], '_status" class="cmb_media_status ui-helper-clearfix embed_wrap">';
+		echo '<input class="cmb_oembed regular-text" type="text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( self::esc( $meta ) ), '" data-objectid="', esc_attr( $object_id ), '" data-objecttype="', esc_attr( $object_type ), '" />', wp_kses_post( self::desc( true ) );
+		echo '<p class="cmb-spinner spinner" style="display:none;"><img src="', esc_url( admin_url( '/images/wpspin_light.gif' ) ), '" alt="spinner"/></p>';
+		echo '<div id="', esc_attr( $field['id'] ), '_status" class="cmb_media_status ui-helper-clearfix embed_wrap">';
 
-			if ( $meta != '' )
+			if ( $meta != '' ) {
+				// oEmbed HTML from WordPress's own provider allow-list, or the fallback link wp_oembed builds; kses would strip the iframe
+				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 				echo cmb_Meta_Box_ajax::get_oembed( $meta, $object_id, array(
 					'object_type' => $object_type,
 					'oembed_args' => array( 'width' => '640' ),
 					'field_id'    => $field['id'],
 				) );
+				// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
 
 		echo '</div>';
 	}
