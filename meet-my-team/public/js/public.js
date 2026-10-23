@@ -1,12 +1,8 @@
-var disable_modal_centering = false;
 /* Reveal js */
 (function (e) {
     e(document).on("click", ".mmt[data-reveal-id]", function (t) {
-        if (jQuery(this).data('modal_centering') == 'true') {
-            disable_modal_centering = true;
-        }
-        /* Check that enable modal */
-        if (e(this).closest('div.mmt_container').data('enable-modal') == false) {
+        /* Check that enable modal (the container may be any allowed tag) */
+        if (e(this).closest('.mmt_container').data('enable-modal') == false) {
             return;
         }
         t.preventDefault();
@@ -161,32 +157,36 @@ var disable_modal_centering = false;
 
     function mmt_center_modal() {
 
-        if (disable_modal_centering) {
-            return;
-        }
+        // Centers the modals of each team, unless its shortcode set disable_modal_centering
+        $('.mmt_container').each(function () {
 
-        // Centers the modal
-        var _window_width = 0;
-        var _modal_width = 0;
-        var _current_margin_left = 0;
-        var _expected_margin_left = 0;
+            var _modals = $(this).find('.reveal-modal');
+            var _window_width = 0;
+            var _modal_width = 0;
+            var _current_margin_left = 0;
+            var _expected_margin_left = 0;
 
-        _modal_width = $(".mmt_container .reveal-modal").outerWidth();
-        _window_width = $(window).width();
-        _expected_margin_left = (_window_width - _modal_width) / 2;
-        _current_margin_left = $(".mmt_container .reveal-modal").offset().left;
+            if ($(this).data('disable-modal-centering') === true || _modals.length === 0) {
+                return;
+            }
 
-        $(".mmt_container .reveal-modal").animate({
-            left: (_expected_margin_left)
-        }, 300);
+            _modal_width = _modals.outerWidth();
+            _window_width = $(window).width();
+            _expected_margin_left = (_window_width - _modal_width) / 2;
+            _current_margin_left = _modals.offset().left;
 
-        // Used for debug only
-        if (mmt_debug == true) {
-            console.log('window width:' + _window_width);
-            console.log('modal width:' + _modal_width);
-            console.log('current margin left:' + _current_margin_left);
-            console.log('expected margin left:' + _expected_margin_left);
-        }
+            _modals.animate({
+                left: (_expected_margin_left)
+            }, 300);
+
+            // Used for debug only
+            if (mmt_debug == true) {
+                console.log('window width:' + _window_width);
+                console.log('modal width:' + _modal_width);
+                console.log('current margin left:' + _current_margin_left);
+                console.log('expected margin left:' + _expected_margin_left);
+            }
+        });
 
     }
 

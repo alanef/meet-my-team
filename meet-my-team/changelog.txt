@@ -12,6 +12,10 @@
 * Fixed: leaving the opt-in screen without choosing left the notice up for good. Opening the plugin's settings now shows the opt-in screen again until you click Allow or Skip.
 * Fixed: on sites running other Fullworks free plugins, the opt-in notice and menu could belong to the wrong plugin.
 * Fixed: deleting the plugin now also removes its stored opt-in choice.
+* Fixed: formatting in a team member's name, such as <em> or <br>, shows as formatting again rather than as literal tags. Script and other unsafe markup is still removed, and unclosed tags are closed.
+* Fixed: enable_modal="false" had no effect when parent_container was anything other than div; the modal opened anyway.
+* Fixed: disable_modal_centering="true" never worked; the modal was always re-centred. It now leaves the modal where your theme's CSS puts it, per shortcode.
+* Fixed: a team member with no Bio Picture got an empty image in the team grid. The picture is now left out, as it already was in the pop-up.
 * Changed: updated the bundled opt-in library to 1.3.3.
 * Removed: an unused demo file and a stray archive from the plugin package.
 * Changed: tested up to WordPress 7.1.

@@ -139,6 +139,7 @@ class Meet_My_Team_Shortcodes {
 						data-debug='" . esc_attr( $this->debug ) . "'
 						data-align='" . esc_attr( $this->align ) . "' 
 						data-enable-modal = '" . esc_attr( $this->enable_modal ) . "' 
+						data-disable-modal-centering='" . esc_attr( $this->disable_modal_centering ) . "'
 						class='mmt_container " . esc_attr( $this->parent_container_class ) . "' id='" . esc_attr( $this->parent_container_id ) . "'>";
 
 		$team_members = array();
@@ -207,13 +208,13 @@ class Meet_My_Team_Shortcodes {
 
 		// Build the Modal
 		$id    = (int) $details['id'];
-		$modal = '	<div id="mmt_member_' . $id . '" class="reveal-modal" data_modal_centering="' . esc_attr( $this->disable_modal_centering ) . '">';
+		$modal = '	<div id="mmt_member_' . $id . '" class="reveal-modal">';
 
 		if ( $details['bio_picture'] != '' ) {
 			$modal .= '<div class="mmt_bio_picture"><img src="' . esc_url( $details['bio_picture'] ) . '"></div>';
 		}
 
-		$modal .= '<h4>' . esc_html( $details['name'] ) . '</h4>
+		$modal .= '<h4>' . force_balance_tags( wp_kses_post( $details['name'] ) ) . '</h4>
 						<h6>' . esc_html( $details['designation'] ) . '</h6>';
 
 		if ( $details['email'] != '' ) {
@@ -231,10 +232,10 @@ class Meet_My_Team_Shortcodes {
 
 		// Build the initial display
 		$display = '<' . tag_escape( $this->item_container ) . ' data-reveal-id="mmt_member_' . $id . '" class="mmt ' . esc_attr( $this->item_container_class ) . '">';
-		if ( $this->display_picture == 'true' ) {
-			$display .= '<div class="mmt_member_img"><img src="' . esc_url( $details['bio_picture'] ) . '" alt="' . esc_attr( $details['name'] ) . '" ></div>';
+		if ( $this->display_picture == 'true' && $details['bio_picture'] != '' ) {
+			$display .= '<div class="mmt_member_img"><img src="' . esc_url( $details['bio_picture'] ) . '" alt="' . esc_attr( wp_strip_all_tags( $details['name'] ) ) . '" ></div>';
 		}
-		$display .= '<h4>' . esc_html( $details['name'] ) . '</h4>';
+		$display .= '<h4>' . force_balance_tags( wp_kses_post( $details['name'] ) ) . '</h4>';
 		$display .= '<h6>' . esc_html( $details['designation'] ) . '</h6>';
 		$display .= '</' . tag_escape( $this->item_container ) . '>';
 
