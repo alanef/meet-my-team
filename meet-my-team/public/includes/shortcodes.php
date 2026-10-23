@@ -74,14 +74,16 @@ class Meet_My_Team_Shortcodes {
 
 		), $atts ) );
 
-		$this->parent_container        = $parent_container;
+		// Container tags come from shortcode attributes, so only these are accepted
+		$this->parent_container        = self::container_tag( $parent_container );
 		$this->parent_container_id     = $parent_container_id;
 		$this->parent_container_class  = $parent_container_class;
 		$this->row_container_class     = $row_container_class;
-		$this->item_container          = $item_container;
+		$this->item_container          = self::container_tag( $item_container );
 		$this->show_groups             = $show_groups;
-		$this->debug                   = $debug;
-		$this->disable_modal_centering = $disable_modal_centering;
+		// public.js only acts on 'true' (or 1) for these two
+		$this->debug                   = in_array( strtolower( trim( $debug ) ), array( 'true', '1' ), true ) ? 'true' : 'false';
+		$this->disable_modal_centering = 'true' === $disable_modal_centering ? 'true' : 'false';
 
 		if ( $cols == "1" || $cols == "2" || $cols == "3" || $cols == "4" || $cols == "6" ) {
 			$this->cols = $cols;
@@ -95,24 +97,28 @@ class Meet_My_Team_Shortcodes {
 			$this->item_container_class = $item_container_class;
 		}
 
-		if ( $align != "left" || $align != "center" ) {
-			$this->align = $align;
-		} else {
-			$this->align = 'center';
-		}
+		// Documented values only. Each keeps the behaviour the old pass-through had: public.js centres
+		// only on 'center', the picture shows only for 'true', and the modal is off for values jQuery
+		// reads as false ('false', '', 0).
+		$this->align = 'center' === $align ? 'center' : 'left';
 
-		if ( $display_picture != "true" || $display_picture != "false" ) {
-			$this->display_picture = $display_picture;
-		} else {
-			$this->display_picture = 'true';
-		}
+		$this->display_picture = 'true' === $display_picture ? 'true' : 'false';
 
-		if ( $enable_modal != "true" || $enable_modal != "false" ) {
-			$this->enable_modal = $enable_modal;
-		} else {
-			$this->enable_modal = 'true';
-		}
+		$modal_off          = in_array( strtolower( trim( $enable_modal ) ), array( 'false', '' ), true ) || ( is_numeric( $enable_modal ) && 0 == $enable_modal );
+		$this->enable_modal = $modal_off ? 'false' : 'true';
 
+	}
+
+	/**
+	 * A container tag from a shortcode attribute, or 'div' if it isn't one of the allowed tags
+	 *
+	 * @param string $tag Requested tag name.
+	 * @return string
+	 */
+	private static function container_tag( $tag ) {
+		$tag = strtolower( trim( (string) $tag ) );
+
+		return in_array( $tag, array( 'div', 'section', 'article', 'aside', 'ul', 'ol', 'li', 'span' ), true ) ? $tag : 'div';
 	}
 
 	/**
@@ -129,17 +135,17 @@ class Meet_My_Team_Shortcodes {
 		$team_members_list = $this->get_team_members();
 
 		// Create the mmt display
-		$mmt = "<" . $this->parent_container . " 
-						data-debug='" . $this->debug . "'
-						data-align='" . $this->align . "' 
-						data-enable-modal = '" . $this->enable_modal . "' 
-						class='mmt_container " . $this->parent_container_class . "' id='" . $this->parent_container_id . "'>";
+		$mmt = "<" . tag_escape( $this->parent_container ) . " 
+						data-debug='" . esc_attr( $this->debug ) . "'
+						data-align='" . esc_attr( $this->align ) . "' 
+						data-enable-modal = '" . esc_attr( $this->enable_modal ) . "' 
+						class='mmt_container " . esc_attr( $this->parent_container_class ) . "' id='" . esc_attr( $this->parent_container_id ) . "'>";
 
 		$team_members = array();
 		foreach ( $team_members_list as $index => $member ) {
 
 			if ( $index % ( $this->cols ) == 0 ) {
-				$mmt .= '<div class="mmt_row ' . $this->row_container_class . '">';
+				$mmt .= '<div class="mmt_row ' . esc_attr( $this->row_container_class ) . '">';
 			}
 
 			$member_details                 = array();
@@ -155,12 +161,12 @@ class Meet_My_Team_Shortcodes {
 			$mmt .= $this->build_single_member( $member_details );
 
 			if ( $index % ( $this->cols ) == ( $this->cols - 1 ) ) {
-				$mmt .= '</div><!-- ' . $this->row_container_class . ' -->';
+				$mmt .= '</div><!-- ' . esc_html( $this->row_container_class ) . ' -->';
 			}
 
 		}
 
-		$mmt .= "</" . $this->parent_container . ">";
+		$mmt .= "</" . tag_escape( $this->parent_container ) . ">";
 
 		return $mmt;
 
@@ -200,36 +206,37 @@ class Meet_My_Team_Shortcodes {
 	private function build_single_member( $details ) {
 
 		// Build the Modal
-		$modal = '	<div id="mmt_member_' . $details['id'] . '" class="reveal-modal" data_modal_centering="' . $this->disable_modal_centering . '">';
+		$id    = (int) $details['id'];
+		$modal = '	<div id="mmt_member_' . $id . '" class="reveal-modal" data_modal_centering="' . esc_attr( $this->disable_modal_centering ) . '">';
 
 		if ( $details['bio_picture'] != '' ) {
-			$modal .= '<div class="mmt_bio_picture"><img src="' . $details['bio_picture'] . '"></div>';
+			$modal .= '<div class="mmt_bio_picture"><img src="' . esc_url( $details['bio_picture'] ) . '"></div>';
 		}
 
-		$modal .= '<h4>' . $details['name'] . '</h4>
-						<h6>' . $details['designation'] . '</h6>';
+		$modal .= '<h4>' . esc_html( $details['name'] ) . '</h4>
+						<h6>' . esc_html( $details['designation'] ) . '</h6>';
 
 		if ( $details['email'] != '' ) {
-			$modal .= '<a href="mailto:' . $details['email'] . '" target="_blank">' . $details['email'] . '</a>';
+			$modal .= '<a href="' . esc_url( 'mailto:' . $details['email'] ) . '" target="_blank">' . esc_html( $details['email'] ) . '</a>';
 		}
 
 		$modal .= '<div>' . wp_kses_post( $details['biography'] ) . '</div>';
 
 		if ( $details['personal_url'] != '' ) {
-			$modal .= '<a href="' . $details['personal_url'] . '" target="_blank">Personal Link</a>';
+			$modal .= '<a href="' . esc_url( $details['personal_url'] ) . '" target="_blank">Personal Link</a>';
 		}
 
 		$modal .= '		<a class="close-reveal-modal">&#215;</a>
 					</div>';
 
 		// Build the initial display
-		$display = '<' . $this->item_container . ' data-reveal-id="mmt_member_' . $details['id'] . '" class="mmt ' . $this->item_container_class . '">';
+		$display = '<' . tag_escape( $this->item_container ) . ' data-reveal-id="mmt_member_' . $id . '" class="mmt ' . esc_attr( $this->item_container_class ) . '">';
 		if ( $this->display_picture == 'true' ) {
-			$display .= '<div class="mmt_member_img"><img src="' . $details['bio_picture'] . '" alt="' . $details['name'] . '" ></div>';
+			$display .= '<div class="mmt_member_img"><img src="' . esc_url( $details['bio_picture'] ) . '" alt="' . esc_attr( $details['name'] ) . '" ></div>';
 		}
-		$display .= '<h4>' . $details['name'] . '</h3>';
-		$display .= '<h6>' . $details['designation'] . '</h4>';
-		$display .= '</' . $this->item_container . '>';
+		$display .= '<h4>' . esc_html( $details['name'] ) . '</h4>';
+		$display .= '<h6>' . esc_html( $details['designation'] ) . '</h6>';
+		$display .= '</' . tag_escape( $this->item_container ) . '>';
 
 		return $modal . $display;
 	}

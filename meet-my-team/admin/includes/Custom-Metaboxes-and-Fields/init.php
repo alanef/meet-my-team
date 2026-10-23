@@ -561,8 +561,9 @@ class cmb_Meta_Box {
 			}
 
 			$old = self::get_data();
-			// Callers verify the nonce before save_fields() runs. The value stays slashed because
-			// update_metadata() unslashes it, and it is sanitized by sanitization_cb() below.
+			// Callers verify the nonce before save_fields() runs. For post and user meta (all this
+			// plugin uses) the value stays slashed because update_metadata() unslashes it; it is
+			// sanitized below, by sanitization_cb() or, for file fields, esc_url_raw().
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$new = isset( $_POST[ $field['id'] ] ) ? $_POST[ $field['id'] ] : null;
 
@@ -620,6 +621,12 @@ class cmb_Meta_Box {
 					} elseif ( '' == $_new_id && $_id_old ) {
 						$updated[] = $_id_name;
 						self::remove_data( $_id_name, $old );
+					}
+
+					// The file field skips sanitization_cb(), so store only a clean URL. esc_url_raw()
+					// leaves no backslashes, so update_metadata()'s unslash does not change it.
+					if ( is_string( $new ) && '' !== $new ) {
+						$new = esc_url_raw( wp_unslash( $new ) );
 					}
 					break;
 				default:
@@ -1067,7 +1074,7 @@ class cmb_Meta_Box {
 
 		$data = 'options-page' === $type
 			? self::get_option( $id, $field_id )
-			: get_metadata( $type, $id, $field_id, ! self::$field['multiple'] /* If multicheck this can be multiple values */ );
+			: get_metadata( $type, $id, $field_id, empty( self::$field['multiple'] ) /* If multicheck this can be multiple values */ );
 
 		return $data;
 	}
@@ -1238,7 +1245,6 @@ class cmb_Meta_Box {
 
 // Handle oembed Ajax
 add_action( 'wp_ajax_cmb_oembed_handler', array( 'cmb_Meta_Box_ajax', 'oembed_handler' ) );
-add_action( 'wp_ajax_nopriv_cmb_oembed_handler', array( 'cmb_Meta_Box_ajax', 'oembed_handler' ) );
 
 /**
  * A helper function to get an option from a CMB options array

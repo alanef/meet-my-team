@@ -128,7 +128,7 @@ class cmb_Meta_Box_ajax {
 
 		// Send back our embed
 		if ( $check_embed && $check_embed != $fallback )
-			return '<div class="embed_status">'. $check_embed .'<p><a href="#" class="cmb_remove_file_button" rel="'. $args['field_id'] .'">'. __( 'Remove Embed', 'meet-my-team' ) .'</a></p></div>';
+			return '<div class="embed_status">'. $check_embed .'<p><a href="#" class="cmb_remove_file_button" rel="'. esc_attr( $args['field_id'] ) .'">'. esc_html__( 'Remove Embed', 'meet-my-team' ) .'</a></p></div>';
 
 		// Otherwise, send back error info that no oEmbeds were found
 		return '<p class="ui-state-error-text">'. sprintf(

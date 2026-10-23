@@ -1,8 +1,11 @@
 == Changelog ==
 = Unreleased =
 * Added: FAQ entry on how to report security bugs, through the Patchstack Vulnerability Disclosure Program.
-* Security: the team member edit screen now escapes every field it displays. A crafted Bio Picture URL could previously add script to that screen.
-* Security: request data read by the bundled meta box library is now unslashed and sanitized.
+* Security: team member names, designations, emails, links and pictures are now escaped on the front end. A crafted value could previously add script to any page showing the team.
+* Security: shortcode attributes are now escaped and validated. A crafted [meet-my-team] shortcode could previously add script to the page. Container tags are limited to div, section, article, aside, ul, ol, li and span, and align, enable_modal, display_picture, disable_modal_centering and debug accept only their documented values.
+* Security: the Bio Picture is saved as a clean URL, and the team member edit screen escapes every field it displays.
+* Security: request data read by the bundled meta box library is now unslashed and sanitized, and its oEmbed lookup no longer answers logged-out visitors.
+* Fixed: each team member's name and designation headings now close with the right tag.
 * Fixed: "Allow & Continue" on the opt-in screen subscribed nobody and recorded you as opted out. It now subscribes you.
 * Fixed: the opt-in notice could not be dismissed and came back on every page load.
 * Fixed: the opt-in notice now links straight to the opt-in screen.

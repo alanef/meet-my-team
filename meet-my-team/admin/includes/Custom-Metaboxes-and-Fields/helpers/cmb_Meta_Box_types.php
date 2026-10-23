@@ -348,7 +348,7 @@ class cmb_Meta_Box_types {
 	private static function timezone_choice_tags() {
 		return array(
 			'optgroup' => array( 'label' => true ),
-			'option'   => array( 'value' => true, 'selected' => true ),
+			'option'   => array( 'value' => true, 'selected' => true, 'dir' => true ),
 		);
 	}
 
@@ -425,7 +425,7 @@ class cmb_Meta_Box_types {
 		self::multicheck( $field, $meta );
 	}
 
-	public static function title( $field, $meta, $object_id, $object_type ) {
+	public static function title( $field, $meta, $object_id = 0, $object_type = 'post' ) {
 		$tag = $object_type == 'post' ? 'h5' : 'h3';
 		echo '<', tag_escape( $tag ), ' class="cmb_metabox_title">', wp_kses_post( $field['name'] ), '</', tag_escape( $tag ), '>', wp_kses_post( self::desc( true ) );
 	}
@@ -525,7 +525,7 @@ class cmb_Meta_Box_types {
 		echo '</ul>';
 	}
 
-	public static function file( $field, $meta, $object_id, $object_type ) {
+	public static function file( $field, $meta, $object_id = 0, $object_type = 'post' ) {
 
 		$input_type_url = 'hidden';
 		if ( 'url' == $field['allow'] || ( is_array( $field['allow'] ) && in_array( 'url', $field['allow'] ) ) )
@@ -564,7 +564,7 @@ class cmb_Meta_Box_types {
 		echo '</div>';
 	}
 
-	public static function oembed( $field, $meta, $object_id, $object_type ) {
+	public static function oembed( $field, $meta, $object_id = 0, $object_type = 'post' ) {
 		echo '<input class="cmb_oembed regular-text" type="text" name="', esc_attr( $field['id'] ), '" id="', esc_attr( $field['id'] ), '" value="', esc_attr( self::esc( $meta ) ), '" data-objectid="', esc_attr( $object_id ), '" data-objecttype="', esc_attr( $object_type ), '" />', wp_kses_post( self::desc( true ) );
 		echo '<p class="cmb-spinner spinner" style="display:none;"><img src="', esc_url( admin_url( '/images/wpspin_light.gif' ) ), '" alt="spinner"/></p>';
 		echo '<div id="', esc_attr( $field['id'] ), '_status" class="cmb_media_status ui-helper-clearfix embed_wrap">';
