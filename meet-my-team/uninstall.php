@@ -14,4 +14,6 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-// @TODO: Define uninstall functionality here
+// Remove the opt-in library's stored choice. Since free_plugin_lib 1.3.0 the host plugin must do this.
+require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+\Fullworks_Free_Plugin_Lib\Main::plugin_uninstall( 'MMT-Free' );
