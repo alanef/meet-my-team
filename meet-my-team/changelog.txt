@@ -1,10 +1,8 @@
 == Changelog ==
 = 2.2.0 =
 * Added: FAQ entry on how to report security bugs, through the Patchstack Vulnerability Disclosure Program.
-* Security: team member names, designations, emails, links and pictures are now escaped on the front end. A crafted value could previously add script to any page showing the team.
-* Security: shortcode attributes are now escaped and validated. A crafted [meet-my-team] shortcode could previously add script to the page. Container tags are limited to div, section, article, aside, ul, ol, li and span, and align, enable_modal, display_picture, disable_modal_centering and debug accept only their documented values.
-* Security: the Bio Picture is saved as a clean URL, and the team member edit screen escapes every field it displays.
-* Security: request data read by the bundled meta box library is now unslashed and sanitized, and its oEmbed lookup no longer answers logged-out visitors.
+* Security: improved security
+* Changed: in the [meet-my-team] shortcode, container tags are limited to div, section, article, aside, ul, ol, li and span, and align, enable_modal, display_picture, disable_modal_centering and debug accept only their documented values. An invalid container tag falls back to div.
 * Fixed: each team member's name and designation headings now close with the right tag.
 * Fixed: "Allow & Continue" on the opt-in screen subscribed nobody and recorded you as opted out. It now subscribes you.
 * Fixed: the opt-in notice could not be dismissed and came back on every page load.
@@ -12,7 +10,7 @@
 * Fixed: leaving the opt-in screen without choosing left the notice up for good. Opening the plugin's settings now shows the opt-in screen again until you click Allow or Skip.
 * Fixed: on sites running other Fullworks free plugins, the opt-in notice and menu could belong to the wrong plugin.
 * Fixed: deleting the plugin now also removes its stored opt-in choice.
-* Fixed: formatting in a team member's name, such as <em> or <br>, shows as formatting again rather than as literal tags. Script and other unsafe markup is still removed, and unclosed tags are closed.
+* Fixed: formatting in a team member's name, such as <em> or <br>, shows as formatting again rather than as literal tags. Unclosed tags are closed.
 * Fixed: enable_modal="false" had no effect when parent_container was anything other than div; the modal opened anyway.
 * Fixed: disable_modal_centering="true" never worked; the modal was always re-centred. It now leaves the modal where your theme's CSS puts it, per shortcode.
 * Fixed: a team member with no Bio Picture got an empty image in the team grid. The picture is now left out, as it already was in the pop-up.

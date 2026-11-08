@@ -121,7 +121,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 == Upgrade Notice ==
 
 = 2.2.0 =
-Security release: team member details and shortcode attributes are now escaped, closing stored cross-site scripting on the front end and on the edit screen. Update recommended.
+Improved security, opt-in notice fixes and display fixes for the team shortcode. Update recommended.
 
 == Changelog ==
 = 2.1.1 =
